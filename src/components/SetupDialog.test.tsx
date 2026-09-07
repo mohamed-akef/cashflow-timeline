@@ -68,4 +68,15 @@ describe('SetupDialog', () => {
     expect(usePlanStore.getState().plan.items).toHaveLength(1);
     expect(usePlanStore.getState().setupOpen).toBe(false);
   });
+
+  it('accepts a negative starting balance', async () => {
+    const user = userEvent.setup();
+    usePlanStore.setState({ plan: seeded });
+    render(<SetupDialog />);
+    const balance = screen.getByLabelText('Starting balance');
+    await user.clear(balance);
+    await user.type(balance, '-500');
+    await user.click(screen.getByRole('button', { name: 'Save plan' }));
+    expect(usePlanStore.getState().plan.settings.startingBalance).toBe(-500);
+  });
 });

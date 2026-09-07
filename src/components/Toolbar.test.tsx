@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Toolbar } from './Toolbar';
 import { usePlanStore } from '../store/planStore';
@@ -50,5 +50,22 @@ describe('Toolbar', () => {
     usePlanStore.setState({ storageError: true });
     render(<Toolbar />);
     expect(screen.getByText(/Could not save on this device/)).toBeInTheDocument();
+  });
+
+  it('shows custom mode when the stored horizon is not a preset', () => {
+    usePlanStore.setState((s) => ({ plan: { ...s.plan, settings: { ...s.plan.settings, horizonMonths: 24 } } }));
+    render(<Toolbar />);
+    expect((screen.getByRole('combobox', { name: 'Horizon' }) as HTMLSelectElement).value).toBe('custom');
+    expect((screen.getByRole('spinbutton', { name: 'Horizon' }) as HTMLInputElement).value).toBe('24');
+  });
+
+  it('refreshes the custom horizon input when the horizon changes externally', () => {
+    usePlanStore.setState((s) => ({ plan: { ...s.plan, settings: { ...s.plan.settings, horizonMonths: 24 } } }));
+    render(<Toolbar />);
+    expect((screen.getByRole('spinbutton', { name: 'Horizon' }) as HTMLInputElement).value).toBe('24');
+    act(() => {
+      usePlanStore.setState((s) => ({ plan: { ...s.plan, settings: { ...s.plan.settings, horizonMonths: 36 } } }));
+    });
+    expect((screen.getByRole('spinbutton', { name: 'Horizon' }) as HTMLInputElement).value).toBe('36');
   });
 });

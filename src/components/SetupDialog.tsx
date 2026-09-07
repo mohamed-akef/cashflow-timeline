@@ -21,6 +21,7 @@ export function SetupDialog() {
 
   const [draft, setDraft] = useState<Plan>(stored);
   const [editing, setEditing] = useState<Editing>(null);
+  const [balanceText, setBalanceText] = useState(String(stored.settings.startingBalance));
   const canCancel = stored.items.length > 0;
 
   const setSettings = (patch: Partial<Plan['settings']>) =>
@@ -91,8 +92,12 @@ export function SetupDialog() {
           <div className="grid grid-cols-2 gap-3 text-sm">
             <label className="block">
               <span className="mb-1 block">{t('startingBalance')}</span>
-              <input className={field} type="number" step="any" value={settings.startingBalance}
-                onChange={(e) => setSettings({ startingBalance: Number(e.target.value) || 0 })} />
+              <input className={field} type="number" step="any" value={balanceText}
+                onChange={(e) => {
+                  setBalanceText(e.target.value);
+                  const n = Number(e.target.value);
+                  if (e.target.value !== '' && Number.isFinite(n)) setSettings({ startingBalance: n });
+                }} />
             </label>
             <label className="block">
               <span className="mb-1 block">{t('startMonth')}</span>

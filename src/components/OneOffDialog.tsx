@@ -36,6 +36,7 @@ export function OneOffDialog({ month, onClose }: Props) {
         aria-labelledby="oneoff-title"
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
+        noValidate
         className="w-full max-w-sm space-y-3 rounded-lg bg-white p-4 shadow-xl"
       >
         <h2 id="oneoff-title" className="text-lg font-semibold">{t('addOneOff', { month: formatMonth(month, locale, 'long') })}</h2>

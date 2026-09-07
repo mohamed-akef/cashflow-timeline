@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON } from '../domain/plan';
 import { exportFilename, exportPlan } from '../domain/serialize';
 import { useT } from '../i18n';
@@ -27,11 +27,21 @@ export function Toolbar() {
   const openSetup = usePlanStore((s) => s.openSetup);
 
   const { horizonMonths, locale, currency } = plan.settings;
-  const [custom, setCustom] = useState(!PRESETS.includes(horizonMonths));
+  const [explicitCustom, setExplicitCustom] = useState(false);
+  const custom = explicitCustom || !PRESETS.includes(horizonMonths);
+  const customInputRef = useRef<HTMLInputElement>(null);
+
+  // Keep the uncontrolled custom-horizon input in sync when horizonMonths changes
+  // from elsewhere (import, Setup save) — but never while the user is mid-keystroke
+  // in this very field, or every digit would remount the input and drop focus.
+  useEffect(() => {
+    const el = customInputRef.current;
+    if (el && document.activeElement !== el) el.value = String(horizonMonths);
+  }, [horizonMonths]);
 
   const onHorizonSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === 'custom') { setCustom(true); return; }
-    setCustom(false);
+    if (e.target.value === 'custom') { setExplicitCustom(true); return; }
+    setExplicitCustom(false);
     updateSettings({ horizonMonths: Number(e.target.value) });
   };
 
@@ -77,6 +87,7 @@ export function Toolbar() {
           </select>
           {custom && (
             <input
+              ref={customInputRef}
               type="number" min={1} max={MAX_HORIZON} aria-label={t('horizon')}
               className={`${control} w-20`} defaultValue={horizonMonths} onChange={onCustomHorizon}
             />

@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { BalanceChart } from './components/BalanceChart';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { SetupDialog } from './components/SetupDialog';
 import { SummaryStrip } from './components/SummaryStrip';
 import { TimelineGrid } from './components/TimelineGrid';
@@ -21,13 +22,15 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <Toolbar />
-      <main className="mx-auto max-w-7xl space-y-4 p-4">
-        <SummaryStrip summary={summary} monthCount={rows.length} />
-        <BalanceChart rows={rows} />
-        <TimelineGrid rows={rows} />
-      </main>
-      {setupOpen && <SetupDialog />}
+      <ErrorBoundary>
+        <Toolbar />
+        <main className="mx-auto max-w-7xl space-y-4 p-4">
+          <SummaryStrip summary={summary} monthCount={rows.length} />
+          <BalanceChart rows={rows} />
+          <TimelineGrid rows={rows} />
+        </main>
+        {setupOpen && <SetupDialog />}
+      </ErrorBoundary>
     </div>
   );
 }

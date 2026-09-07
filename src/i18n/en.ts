@@ -76,6 +76,10 @@ export const en = {
   errN: 'Enter a number of months of 2 or more.',
   errMonths: 'Pick at least one month.',
   errWindow: '"Until" must not be before "From".',
+
+  // Error boundary
+  errorTitle: 'Something went wrong',
+  errorBody: 'The stored plan could not be displayed. You can clear it and start again — nothing is lost outside this browser.',
 } as const;
 
 export type MessageKey = keyof typeof en;

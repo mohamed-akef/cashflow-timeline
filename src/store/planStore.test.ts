@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createPlanStore, loadStoredPlan, persistPlan, STORAGE_KEY } from './planStore';
+import { createPlanStore, loadStoredPlan, persistPlan, STORAGE_KEY, usePlanStore } from './planStore';
 import { emptyPlan, type Plan, type PlanItem } from '../domain/plan';
 import { exportPlan } from '../domain/serialize';
 
@@ -144,5 +144,12 @@ describe('createPlanStore', () => {
     store.getState().savePlan(plan);
     expect(store.getState().plan).toEqual(plan);
     expect(store.getState().storageError).toBe(false);
+  });
+
+  it('usePlanStore singleton is bound to jsdom localStorage', () => {
+    localStorage.clear();
+    usePlanStore.getState().savePlan(plan);
+    expect(localStorage.getItem(STORAGE_KEY)).not.toBeNull();
+    localStorage.clear();
   });
 });

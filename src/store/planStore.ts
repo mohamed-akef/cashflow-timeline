@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { addMonths, diffMonths, type MonthKey } from '../domain/month';
-import { emptyPlan, newId, type Direction, type Plan, type PlanItem, type PlanSettings } from '../domain/plan';
+import { addMonths, diffMonths, isMonthKey, type MonthKey } from '../domain/month';
+import { emptyPlan, newId, planSchema, type Direction, type Plan, type PlanItem, type PlanSettings } from '../domain/plan';
 import { exportPlan, importPlan, type ImportErrorCode } from '../domain/serialize';
 
 export const STORAGE_KEY = 'cashflow-timeline:plan:v1';
@@ -76,7 +76,10 @@ export function createPlanStore(storage: Storage | undefined) {
       storageError: false,
       importError: null,
 
-      savePlan: (plan) => commit(plan, { setupOpen: false }),
+      savePlan: (plan) => {
+        if (!planSchema.safeParse(plan).success) return;
+        commit(plan, { setupOpen: false });
+      },
 
       updateSettings: (patch) => {
         const { plan } = get();
@@ -84,6 +87,7 @@ export function createPlanStore(storage: Storage | undefined) {
       },
 
       addOneOff: ({ label, amount, direction, month }) => {
+        if (!isMonthKey(month)) return;
         const { plan } = get();
         const item: PlanItem = {
           id: newId(), label, amount, direction,
@@ -93,6 +97,7 @@ export function createPlanStore(storage: Storage | undefined) {
       },
 
       moveItem: (id, toMonth) => {
+        if (!isMonthKey(toMonth)) return;
         const { plan } = get();
         if (!plan.items.some((i) => i.id === id)) return;
         commit({ ...plan, items: plan.items.map((i) => (i.id === id ? movedItem(i, toMonth) : i)) });
@@ -109,8 +114,9 @@ export function createPlanStore(storage: Storage | undefined) {
       },
 
       clearAll: () => {
-        try { storage?.removeItem(STORAGE_KEY); } catch { /* nothing to do */ }
-        set({ plan: emptyPlan(), setupOpen: true, storageError: false, importError: null });
+        let storageError = false;
+        try { storage?.removeItem(STORAGE_KEY); } catch { storageError = true; }
+        set({ plan: emptyPlan(), setupOpen: true, storageError, importError: null });
       },
 
       openSetup: () => set({ setupOpen: true }),

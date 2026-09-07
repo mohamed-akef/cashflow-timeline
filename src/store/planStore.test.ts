@@ -112,6 +112,22 @@ describe('createPlanStore', () => {
     expect(store.getState().plan).toEqual(plan);
   });
 
+  it('savePlan refuses a plan that fails the schema', () => {
+    const store = createPlanStore(storage);
+    store.getState().savePlan(plan);
+    const bad = { ...plan, settings: { ...plan.settings, startMonth: 'March' } };
+    store.getState().savePlan(bad as Plan);
+    expect(store.getState().plan).toEqual(plan);
+  });
+
+  it('moveItem and addOneOff ignore non-MonthKey input', () => {
+    const store = createPlanStore(storage);
+    store.getState().savePlan(plan);
+    store.getState().moveItem('s', 'March');
+    store.getState().addOneOff({ label: 'X', amount: 1, direction: 'out', month: '2026-1' });
+    expect(store.getState().plan).toEqual(plan);
+  });
+
   it('importFromText replaces the plan on success and sets importError on failure', () => {
     const store = createPlanStore(storage);
     expect(store.getState().importFromText('garbage')).toBe(false);
@@ -128,6 +144,14 @@ describe('createPlanStore', () => {
     store.getState().clearAll();
     expect(storage.getItem(STORAGE_KEY)).toBeNull();
     expect(store.getState().plan.items).toEqual([]);
+    expect(store.getState().setupOpen).toBe(true);
+  });
+
+  it('clearAll reports a failed removeItem via storageError', () => {
+    const broken: Storage = { ...storage, removeItem: () => { throw new Error('denied'); } };
+    const store = createPlanStore(broken);
+    store.getState().clearAll();
+    expect(store.getState().storageError).toBe(true);
     expect(store.getState().setupOpen).toBe(true);
   });
 

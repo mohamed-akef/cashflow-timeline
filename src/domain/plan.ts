@@ -37,7 +37,7 @@ export const planItemSchema = z.object({
 });
 
 export const planSettingsSchema = z.object({
-  currency: z.string().length(3),
+  currency: z.string().regex(/^[A-Za-z]{3}$/),
   locale: z.enum(['ar', 'en']),
   startMonth: monthKeySchema,
   horizonMonths: z.number().int().min(1).max(MAX_HORIZON),

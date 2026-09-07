@@ -48,6 +48,9 @@ describe('planSchema', () => {
     expect(planSchema.safeParse({ ...base, settings: { ...base.settings, horizonMonths: 0 } }).success).toBe(false);
     expect(planSchema.safeParse({ ...base, settings: { ...base.settings, horizonMonths: 61 } }).success).toBe(false);
     expect(planSchema.safeParse({ ...base, settings: { ...base.settings, locale: 'fr' } }).success).toBe(false);
+    expect(planSchema.safeParse({ ...base, settings: { ...base.settings, currency: '123' } }).success).toBe(false);
+    expect(planSchema.safeParse({ ...base, settings: { ...base.settings, currency: '$$$' } }).success).toBe(false);
+    expect(planSchema.safeParse({ ...base, settings: { ...base.settings, currency: 'usd' } }).success).toBe(true);
   });
 });
 

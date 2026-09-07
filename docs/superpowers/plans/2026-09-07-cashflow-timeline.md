@@ -1594,7 +1594,7 @@ export function monthName(monthOfYear: number, locale: Locale): string {
 - [ ] **Step 7: Run to verify it passes**
 
 Run: `pnpm vitest run src/i18n/i18n.test.ts`
-Expected: PASS, 7 tests. If `formatMonth('2026-09','ar')` fails on your machine, check `node -p "Intl.DateTimeFormat.supportedLocalesOf(['ar'])"` prints `['ar']` — Node ships full ICU; do not weaken the test.
+Expected: PASS, 6 tests. If `formatMonth('2026-09','ar')` fails on your machine, check `node -p "Intl.DateTimeFormat.supportedLocalesOf(['ar'])"` prints `['ar']` — Node ships full ICU; do not weaken the test.
 
 - [ ] **Step 8: Commit**
 
@@ -1724,7 +1724,7 @@ git commit -m "feat(ui): SummaryStrip"
 
 **Interfaces:**
 - Consumes: `MonthRow` from `../domain/engine`; `useT`, `useLocale`; `formatMoney`, `formatMonth`; `usePlanStore` for currency.
-- Produces: `<BalanceChart rows={MonthRow[]} />`. Renders an `<svg role="img">` with: a zero line, a `<polyline data-testid="balance-line">`, a red `<polygon data-testid="negative-area">` clipped to below zero (only when any closing < 0), one transparent hover `<rect>` per month with a `<title>` tooltip, and month labels. **RTL:** month order is reversed on the x-axis when `locale === 'ar'`.
+- Produces: `<BalanceChart rows={MonthRow[]} />`. Renders an `<svg role="img">` with: a zero line, a `<polyline data-testid="balance-line">`, a red `<polygon data-testid="negative-area">` clipped to below zero (only when any closing < 0), one transparent hover `<rect data-testid="month-hit">` per month with a `<title>` tooltip, and month labels. **RTL:** month order is reversed on the x-axis when `locale === 'ar'`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1751,7 +1751,7 @@ describe('BalanceChart', () => {
     const line = screen.getByTestId('balance-line');
     expect(line.getAttribute('points')!.trim().split(/\s+/)).toHaveLength(3);
     expect(screen.queryByTestId('negative-area')).toBeNull();
-    expect(screen.getAllByRole('presentation')).toHaveLength(3);
+    expect(screen.getAllByTestId('month-hit')).toHaveLength(3);
   });
 
   it('shades the negative area when any month is negative', () => {
@@ -1840,7 +1840,7 @@ export function BalanceChart({ rows }: Props) {
             <text x={x(i)} y={H - 8} textAnchor="middle" fontSize={11} fill="#475569">
               {formatMonth(r.month, locale)}
             </text>
-            <rect role="presentation" x={x(i) - slot / 2} y={0} width={slot} height={H} fill="transparent">
+            <rect data-testid="month-hit" x={x(i) - slot / 2} y={0} width={slot} height={H} fill="transparent">
               <title>
                 {`${formatMonth(r.month, locale, 'long')}\n${t('opening')}: ${formatMoney(r.opening, currency, locale)}\n${t('totalIn')}: ${formatMoney(r.totalIn, currency, locale)}\n${t('totalOut')}: ${formatMoney(r.totalOut, currency, locale)}\n${t('closing')}: ${formatMoney(r.closing, currency, locale)}`}
               </title>
@@ -2245,6 +2245,15 @@ import { usePlanStore } from '../store/planStore';
 
 const PRESETS: readonly number[] = HORIZON_PRESETS;
 
+/** FileReader rather than File.text(): supported by every browser and by jsdom. */
+const readText = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ''));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(file);
+  });
+
 export function Toolbar() {
   const t = useT();
   const plan = usePlanStore((s) => s.plan);
@@ -2283,7 +2292,7 @@ export function Toolbar() {
   const onImportFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    importFromText(await file.text());
+    importFromText(await readText(file));
     e.target.value = '';
   };
 
@@ -3009,7 +3018,7 @@ Design spec: `docs/superpowers/specs/2026-09-07-cashflow-timeline-design.md`.
 - [ ] **Step 6: Full verification**
 
 Run: `pnpm typecheck && pnpm test && pnpm build`
-Expected: no type errors; all suites pass (smoke 1, month 7, plan 7, engine 14, serialize 6, store 17, i18n 7, SummaryStrip 3, BalanceChart 3, TimelineGrid 4, Toolbar 5, ItemForm 5, SetupDialog 3, App 2); `dist/` produced.
+Expected: no type errors; all suites pass (smoke 1, month 7, plan 7, engine 14, serialize 6, store 17, i18n 6, SummaryStrip 3, BalanceChart 3, TimelineGrid 4, Toolbar 5, ItemForm 5, SetupDialog 3, App 2); `dist/` produced.
 
 - [ ] **Step 7: Manual smoke in the browser**
 

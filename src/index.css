@@ -57,3 +57,21 @@
   --accent-hover: #cbd5e1;    /* slate-300 */
   --on-accent: #0f172a;       /* slate-900 */
 }
+
+/* Entrance motion for forms, dialogs and inline messages. Used with the
+   motion-safe: variant so "reduce motion" users get an instant change. */
+@theme {
+  --animate-enter: enter 150ms ease-out;
+  --animate-fade: fade 150ms ease-out;
+  --animate-pop: pop 150ms ease-out;
+
+  @keyframes enter {
+    from { opacity: 0; transform: translateY(-4px); }
+  }
+  @keyframes fade {
+    from { opacity: 0; }
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.97); }
+  }
+}

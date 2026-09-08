@@ -1,6 +1,7 @@
 import { useLocale, useT } from '../i18n';
 import { LOCALES, useUiStore, type Locale } from '../store/uiStore';
 import { THEME_PREFERENCES, useThemePreference, type ThemePreference } from '../theme';
+import { input } from './ui';
 
 /** Short, locale-invariant labels: a language switch must be readable in every language. */
 const LOCALE_LABEL: Record<Locale, string> = { en: 'EN', ar: 'AR' };
@@ -36,7 +37,7 @@ export function AppBar() {
         </div>
 
         <select
-          className="rounded border border-line-strong bg-surface px-2 py-1 text-sm"
+          className={input}
           aria-label={t('theme')}
           value={theme}
           onChange={(e) => setTheme(e.target.value as ThemePreference)}

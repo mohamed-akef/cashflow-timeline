@@ -3,6 +3,7 @@ import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON } from '../domain/plan';
 import { exportFilename, exportPlan } from '../domain/serialize';
 import { useT } from '../i18n';
 import { usePlanStore } from '../store/planStore';
+import { btnSecondary, input } from './ui';
 
 const PRESETS: readonly number[] = HORIZON_PRESETS;
 
@@ -71,8 +72,8 @@ export function Toolbar() {
     if (window.confirm(t('clearConfirm'))) clearAll();
   };
 
-  const control = 'rounded border border-line-strong bg-surface px-2 py-1 text-sm';
-  const button = 'rounded border border-line-strong bg-surface px-3 py-1 text-sm hover:bg-surface-muted';
+  const control = input;
+  const button = btnSecondary;
 
   return (
     <div className="border-b border-line bg-surface">

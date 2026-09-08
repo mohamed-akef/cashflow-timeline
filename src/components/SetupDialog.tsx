@@ -4,6 +4,7 @@ import { useLocale, useT, type MessageKey } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
 import { ItemForm } from './ItemForm';
+import { btnPrimary, btnSecondary, fieldLabel, input } from './ui';
 
 type Editing = { direction: Direction; item?: PlanItem } | null;
 
@@ -36,8 +37,8 @@ export function SetupDialog() {
 
   const deleteItem = (id: string) => setDraft((d) => ({ ...d, items: d.items.filter((i) => i.id !== id) }));
 
-  const field = 'w-full rounded border border-line-strong px-2 py-1';
-  const button = 'rounded border border-line-strong bg-surface px-2 py-1 text-sm hover:bg-surface-muted';
+  const field = `${input} w-full`;
+  const button = btnSecondary;
   const { settings } = draft;
 
   const list = (direction: Direction, title: MessageKey, addKey: MessageKey) => {
@@ -50,7 +51,7 @@ export function SetupDialog() {
         </div>
         <ul className="divide-y divide-line rounded border border-line">
           {items.map((item) => (
-            <li key={item.id} className="flex items-center gap-3 px-3 py-2 text-sm">
+            <li key={item.id} className="flex items-center gap-3 px-3 py-1.5 text-sm">
               <span className="me-auto">
                 <span className="font-medium">{item.label}</span>
                 <span className="ms-2 text-ink-faint">
@@ -66,6 +67,7 @@ export function SetupDialog() {
         {editing?.direction === direction && (
           <ItemForm
             direction={direction}
+            currency={settings.currency}
             initial={editing.item}
             defaultMonth={settings.startMonth}
             onSave={upsertItem}
@@ -77,15 +79,15 @@ export function SetupDialog() {
   };
 
   return (
-    <div className="fixed inset-0 z-10 flex items-start justify-center overflow-y-auto bg-black/40 dark:bg-black/60 p-4">
-      <div role="dialog" aria-modal="true" aria-labelledby="setup-title" className="w-full max-w-2xl space-y-6 rounded-lg bg-surface p-5 shadow-xl">
-        <h2 id="setup-title" className="text-xl font-semibold">{t('setupTitle')}</h2>
+    <div className="fixed inset-0 z-10 flex items-start justify-center overflow-y-auto bg-black/40 p-4 dark:bg-black/60 motion-safe:animate-fade">
+      <div role="dialog" aria-modal="true" aria-labelledby="setup-title" className="w-full max-w-2xl space-y-4 rounded-lg bg-surface p-4 shadow-xl motion-safe:animate-pop">
+        <h2 id="setup-title" className="text-lg font-semibold">{t('setupTitle')}</h2>
 
-        <section className="space-y-3">
+        <section className="space-y-2">
           <h3 className="font-medium">{t('basics')}</h3>
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <label className="block">
-              <span className="mb-1 block">{t('startingBalance')}</span>
+          <div className="flex flex-wrap items-start gap-3 text-sm">
+            <label className="block w-36">
+              <span className={fieldLabel}>{t('startingBalance')}</span>
               <input className={field} type="number" step="any" value={balanceText}
                 onChange={(e) => {
                   setBalanceText(e.target.value);
@@ -93,20 +95,20 @@ export function SetupDialog() {
                   if (e.target.value !== '' && Number.isFinite(n)) setSettings({ startingBalance: n });
                 }} />
             </label>
-            <label className="block">
-              <span className="mb-1 block">{t('startMonth')}</span>
+            <label className="block w-40">
+              <span className={fieldLabel}>{t('startMonth')}</span>
               <input className={field} type="month" value={settings.startMonth}
                 onChange={(e) => e.target.value && setSettings({ startMonth: e.target.value })} />
             </label>
-            <label className="block">
-              <span className="mb-1 block">{t('horizon')}</span>
+            <label className="block w-48">
+              <span className={fieldLabel}>{t('horizon')}</span>
               <input className={field} type="number" min={1} max={MAX_HORIZON} list="horizon-presets" value={settings.horizonMonths}
                 onChange={(e) => { const n = Math.round(Number(e.target.value)); if (n >= 1 && n <= MAX_HORIZON) setSettings({ horizonMonths: n }); }} />
               <datalist id="horizon-presets">{HORIZON_PRESETS.map((n) => <option key={n} value={n} />)}</datalist>
               <span className="mt-1 block text-xs text-ink-faint">{t('horizonHint')}</span>
             </label>
-            <label className="block">
-              <span className="mb-1 block">{t('currency')}</span>
+            <label className="block w-24">
+              <span className={fieldLabel}>{t('currency')}</span>
               <select className={field} value={settings.currency} onChange={(e) => setSettings({ currency: e.target.value })}>
                 {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -117,11 +119,11 @@ export function SetupDialog() {
         {list('in', 'income', 'addIncome')}
         {list('out', 'expenses', 'addExpense')}
 
-        <div className="flex justify-end gap-2 border-t border-line pt-4">
+        <div className="flex justify-end gap-2 border-t border-line pt-3">
           {canCancel && (
             <button type="button" className={button} onClick={closeSetup}>{t('cancel')}</button>
           )}
-          <button type="button" className="rounded bg-accent px-4 py-1.5 text-on-accent hover:bg-accent-hover" onClick={() => savePlan(draft)}>
+          <button type="button" className={btnPrimary} onClick={() => savePlan(draft)}>
             {t('savePlan')}
           </button>
         </div>

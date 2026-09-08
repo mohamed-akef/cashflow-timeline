@@ -68,4 +68,17 @@ describe('Toolbar', () => {
     });
     expect((screen.getByRole('spinbutton', { name: 'Horizon' }) as HTMLInputElement).value).toBe('36');
   });
+
+  it('switches the theme and remembers it', async () => {
+    const user = userEvent.setup();
+    document.documentElement.classList.remove('dark');
+    render(<Toolbar />);
+    const select = screen.getByRole('combobox', { name: 'Theme' }) as HTMLSelectElement;
+    expect(select.value).toBe('system');
+    await user.selectOptions(select, 'dark');
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(localStorage.getItem('cashflow-timeline:theme')).toBe('dark');
+    await user.selectOptions(select, 'light');
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+  });
 });

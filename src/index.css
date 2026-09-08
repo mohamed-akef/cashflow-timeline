@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+/* Dark mode is class-based (html.dark), set by src/theme.ts, so the user can
+   override the OS setting from the toolbar. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Semantic colours. Utilities such as bg-surface or text-ink-muted resolve to
+   these variables, which flip under .dark, so component code never names a
+   light-only shade. State colours (red/emerald/amber) stay as Tailwind
+   palette classes with explicit dark: variants at their few call sites. */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-strong: var(--surface-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-ink-ghost: var(--ink-ghost);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-on-accent: var(--on-accent);
+}
+
+:root {
+  color-scheme: light;
+  --canvas: #f8fafc;          /* slate-50  */
+  --surface: #ffffff;
+  --surface-muted: #f1f5f9;   /* slate-100 */
+  --surface-strong: #e2e8f0;  /* slate-200 */
+  --ink: #0f172a;             /* slate-900 */
+  --ink-muted: #475569;       /* slate-600 */
+  --ink-faint: #64748b;       /* slate-500 */
+  --ink-ghost: #cbd5e1;       /* slate-300 */
+  --line: #e2e8f0;            /* slate-200 */
+  --line-strong: #cbd5e1;     /* slate-300 */
+  --accent: #0f172a;          /* slate-900 */
+  --accent-hover: #334155;    /* slate-700 */
+  --on-accent: #ffffff;
+}
+
+.dark {
+  color-scheme: dark;
+  --canvas: #020617;          /* slate-950 */
+  --surface: #0f172a;         /* slate-900 */
+  --surface-muted: #1e293b;   /* slate-800 */
+  --surface-strong: #334155;  /* slate-700 */
+  --ink: #f1f5f9;             /* slate-100 */
+  --ink-muted: #94a3b8;       /* slate-400 */
+  --ink-faint: #64748b;       /* slate-500 */
+  --ink-ghost: #475569;       /* slate-600 */
+  --line: #1e293b;            /* slate-800 */
+  --line-strong: #334155;     /* slate-700 */
+  --accent: #e2e8f0;          /* slate-200 */
+  --accent-hover: #cbd5e1;    /* slate-300 */
+  --on-accent: #0f172a;       /* slate-900 */
+}

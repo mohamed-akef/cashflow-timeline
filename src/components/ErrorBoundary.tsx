@@ -34,13 +34,13 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.failed) {
       const locale = usePlanStore.getState().plan.settings.locale;
       return (
-        <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
-          <div className="w-full max-w-md space-y-3 rounded-lg bg-white p-6 text-center shadow-xl">
+        <div className="flex min-h-screen items-center justify-center bg-canvas p-4">
+          <div className="w-full max-w-md space-y-3 rounded-lg bg-surface p-6 text-center shadow-xl">
             <h1 className="text-xl font-semibold">{t(locale, 'errorTitle')}</h1>
-            <p className="text-sm text-slate-600">{t(locale, 'errorBody')}</p>
+            <p className="text-sm text-ink-muted">{t(locale, 'errorBody')}</p>
             <button
               type="button"
-              className="rounded bg-slate-900 px-4 py-1.5 text-white hover:bg-slate-700"
+              className="rounded bg-accent px-4 py-1.5 text-on-accent hover:bg-accent-hover"
               onClick={this.onClear}
             >
               {t(locale, 'clearAll')}

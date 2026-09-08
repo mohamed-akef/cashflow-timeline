@@ -21,7 +21,7 @@ export default function App() {
   const summary = useMemo(() => summarize(rows), [rows]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-canvas text-ink">
       <ErrorBoundary>
         <Toolbar />
         <main className="mx-auto max-w-7xl space-y-4 p-4">

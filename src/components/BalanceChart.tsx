@@ -40,23 +40,23 @@ export function BalanceChart({ rows }: Props) {
   const slot = rows.length > 1 ? step : innerW;
 
   return (
-    <figure className="rounded-lg border border-slate-200 bg-white p-3">
-      <figcaption className="mb-2 text-sm font-medium text-slate-600">{t('chartTitle')}</figcaption>
+    <figure className="rounded-lg border border-line bg-surface p-3">
+      <figcaption className="mb-2 text-sm font-medium text-ink-muted">{t('chartTitle')}</figcaption>
       <svg role="img" aria-label={t('chartTitle')} viewBox={`0 0 ${W} ${H}`} className="h-auto w-full">
         <defs>
           <clipPath id="below-zero">
             <rect x={0} y={zeroY} width={W} height={Math.max(0, H - zeroY)} />
           </clipPath>
         </defs>
-        <line x1={PAD.x} x2={W - PAD.x} y1={zeroY} y2={zeroY} stroke="#94a3b8" strokeDasharray="4 4" />
+        <line x1={PAD.x} x2={W - PAD.x} y1={zeroY} y2={zeroY} className="stroke-ink-faint" strokeDasharray="4 4" />
         {hasNegative && (
-          <polygon data-testid="negative-area" points={areaPoints} fill="#ef4444" fillOpacity={0.25} clipPath="url(#below-zero)" />
+          <polygon data-testid="negative-area" points={areaPoints} className="fill-red-500" fillOpacity={0.25} clipPath="url(#below-zero)" />
         )}
-        <polyline data-testid="balance-line" points={points} fill="none" stroke="#0f172a" strokeWidth={2} />
+        <polyline data-testid="balance-line" points={points} fill="none" className="stroke-ink" strokeWidth={2} />
         {rows.map((r, i) => (
           <g key={r.month}>
-            <circle cx={x(i)} cy={y(r.closing)} r={3.5} fill={r.closing < 0 ? '#ef4444' : '#0f172a'} />
-            <text x={x(i)} y={H - 8} textAnchor="middle" fontSize={11} fill="#475569">
+            <circle cx={x(i)} cy={y(r.closing)} r={3.5} className={r.closing < 0 ? 'fill-red-500' : 'fill-ink'} />
+            <text x={x(i)} y={H - 8} textAnchor="middle" fontSize={11} className="fill-ink-muted">
               {formatMonth(r.month, locale)}
             </text>
             <rect data-testid="month-hit" x={x(i) - slot / 2} y={0} width={slot} height={H} fill="transparent">

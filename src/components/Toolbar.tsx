@@ -3,8 +3,10 @@ import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON } from '../domain/plan';
 import { exportFilename, exportPlan } from '../domain/serialize';
 import { useT } from '../i18n';
 import { usePlanStore } from '../store/planStore';
+import { THEME_PREFERENCES, useThemePreference, type ThemePreference } from '../theme';
 
 const PRESETS: readonly number[] = HORIZON_PRESETS;
+const THEME_LABEL = { system: 'themeSystem', light: 'themeLight', dark: 'themeDark' } as const;
 
 /** FileReader rather than File.text(): supported by every browser and by jsdom. */
 const readText = (file: File) =>
@@ -25,6 +27,7 @@ export function Toolbar() {
   const storageError = usePlanStore((s) => s.storageError);
   const clearAll = usePlanStore((s) => s.clearAll);
   const openSetup = usePlanStore((s) => s.openSetup);
+  const [theme, setTheme] = useThemePreference();
 
   const { horizonMonths, locale, currency } = plan.settings;
   const [explicitCustom, setExplicitCustom] = useState(false);
@@ -71,11 +74,11 @@ export function Toolbar() {
     if (window.confirm(t('clearConfirm'))) clearAll();
   };
 
-  const control = 'rounded border border-slate-300 bg-white px-2 py-1 text-sm';
-  const button = 'rounded border border-slate-300 bg-white px-3 py-1 text-sm hover:bg-slate-100';
+  const control = 'rounded border border-line-strong bg-surface px-2 py-1 text-sm';
+  const button = 'rounded border border-line-strong bg-surface px-3 py-1 text-sm hover:bg-surface-muted';
 
   return (
-    <header className="border-b border-slate-200 bg-white">
+    <header className="border-b border-line bg-surface">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 p-3">
         <h1 className="me-auto text-lg font-semibold">{t('appTitle')}</h1>
 
@@ -101,6 +104,13 @@ export function Toolbar() {
           </select>
         </label>
 
+        <label className="flex items-center gap-1 text-sm">
+          <span>{t('theme')}</span>
+          <select className={control} aria-label={t('theme')} value={theme} onChange={(e) => setTheme(e.target.value as ThemePreference)}>
+            {THEME_PREFERENCES.map((p) => <option key={p} value={p}>{t(THEME_LABEL[p])}</option>)}
+          </select>
+        </label>
+
         <button type="button" className={button} onClick={() => updateSettings({ locale: locale === 'ar' ? 'en' : 'ar' })}>
           {t('switchLanguage')}
         </button>
@@ -110,16 +120,16 @@ export function Toolbar() {
           {t('importJson')}
           <input type="file" accept=".json,application/json" className="sr-only" aria-label={t('importJson')} onChange={onImportFile} onClick={clearImportError} />
         </label>
-        <button type="button" className={`${button} text-red-700`} onClick={onClear}>{t('clearAll')}</button>
+        <button type="button" className={`${button} text-red-700 dark:text-red-400`} onClick={onClear}>{t('clearAll')}</button>
       </div>
 
       {importError && (
-        <p role="alert" className="mx-auto max-w-7xl px-3 pb-2 text-sm text-red-700">{t(`importError_${importError}`)}</p>
+        <p role="alert" className="mx-auto max-w-7xl px-3 pb-2 text-sm text-red-700 dark:text-red-400">{t(`importError_${importError}`)}</p>
       )}
       {storageError && (
-        <p role="status" className="mx-auto max-w-7xl px-3 pb-2 text-sm text-amber-700">{t('storageError')}</p>
+        <p role="status" className="mx-auto max-w-7xl px-3 pb-2 text-sm text-amber-700 dark:text-amber-400">{t('storageError')}</p>
       )}
-      <p className="mx-auto max-w-7xl px-3 pb-2 text-xs text-slate-500">{t('privacyNote')}</p>
+      <p className="mx-auto max-w-7xl px-3 pb-2 text-xs text-ink-faint">{t('privacyNote')}</p>
     </header>
   );
 }

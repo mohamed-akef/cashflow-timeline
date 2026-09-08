@@ -109,6 +109,7 @@ export function SetupDialog() {
               <input className={field} type="number" min={1} max={MAX_HORIZON} list="horizon-presets" value={settings.horizonMonths}
                 onChange={(e) => { const n = Math.round(Number(e.target.value)); if (n >= 1 && n <= MAX_HORIZON) setSettings({ horizonMonths: n }); }} />
               <datalist id="horizon-presets">{HORIZON_PRESETS.map((n) => <option key={n} value={n} />)}</datalist>
+              <span className="mt-1 block text-xs text-ink-faint">{t('horizonHint')}</span>
             </label>
             <label className="block">
               <span className="mb-1 block">{t('currency')}</span>

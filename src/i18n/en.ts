@@ -3,7 +3,8 @@ export const en = {
   privacyNote: 'Everything stays in this browser. Nothing is sent anywhere.',
 
   // Toolbar
-  horizon: 'Horizon',
+  horizon: 'Duration',
+  horizonHint: 'How many months the plan covers, counting from the start month.',
   horizonMonths: '{n} months',
   horizonCustom: 'Custom',
   switchLanguage: 'العربية',
@@ -23,7 +24,7 @@ export const en = {
   summaryFirstNegative: 'First negative: {month}',
   summaryLowest: 'Lowest: {amount} in {month}',
   summaryRecovers: 'Recovers: {month}',
-  summaryNeverRecovers: 'Does not recover in this horizon',
+  summaryNeverRecovers: 'Does not recover within the plan duration',
 
   // Chart + grid
   chartTitle: 'Closing balance by month',

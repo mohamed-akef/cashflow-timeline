@@ -4,7 +4,8 @@ export const ar: Record<MessageKey, string> = {
   appTitle: 'الجدول الزمني للتدفق النقدي',
   privacyNote: 'كل شيء يبقى في هذا المتصفح. لا يُرسل أي شيء إلى أي مكان.',
 
-  horizon: 'المدى',
+  horizon: 'المدة',
+  horizonHint: 'عدد الأشهر التي تغطيها الخطة بدءًا من شهر البداية.',
   horizonMonths: '{n} أشهر',
   horizonCustom: 'مخصص',
   switchLanguage: 'English',
@@ -23,7 +24,7 @@ export const ar: Record<MessageKey, string> = {
   summaryFirstNegative: 'أول شهر سالب: {month}',
   summaryLowest: 'الأدنى: {amount} في {month}',
   summaryRecovers: 'يتعافى: {month}',
-  summaryNeverRecovers: 'لا يتعافى ضمن هذا المدى',
+  summaryNeverRecovers: 'لا يتعافى ضمن مدة الخطة',
 
   chartTitle: 'الرصيد الختامي حسب الشهر',
   opening: 'الافتتاحي',

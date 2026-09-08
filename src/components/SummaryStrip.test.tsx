@@ -28,6 +28,6 @@ describe('SummaryStrip', () => {
     render(<SummaryStrip monthCount={3} summary={{
       allPositive: false, firstNegative: '2026-01', lowest: { month: '2026-03', balance: -1 },
     }} />);
-    expect(screen.getByText('Does not recover in this horizon')).toBeInTheDocument();
+    expect(screen.getByText('Does not recover within the plan duration')).toBeInTheDocument();
   });
 });

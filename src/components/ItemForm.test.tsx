@@ -13,7 +13,7 @@ describe('ItemForm', () => {
   it('saves a monthly item with defaults', async () => {
     const user = userEvent.setup();
     const onSave = vi.fn();
-    render(<ItemForm direction="in" defaultMonth="2026-01" onSave={onSave} onCancel={() => {}} />);
+    render(<ItemForm currency="SAR" direction="in" defaultMonth="2026-01" onSave={onSave} onCancel={() => {}} />);
     await user.type(screen.getByLabelText('Label'), 'Salary');
     await user.type(screen.getByLabelText('Amount'), '9000');
     await user.click(screen.getByRole('button', { name: 'Save' }));
@@ -27,7 +27,7 @@ describe('ItemForm', () => {
   it('validates label and amount', async () => {
     const user = userEvent.setup();
     const onSave = vi.fn();
-    render(<ItemForm direction="out" defaultMonth="2026-01" onSave={onSave} onCancel={() => {}} />);
+    render(<ItemForm currency="SAR" direction="out" defaultMonth="2026-01" onSave={onSave} onCancel={() => {}} />);
     await user.click(screen.getByRole('button', { name: 'Save' }));
     expect(screen.getByRole('alert')).toHaveTextContent('Enter a label.');
     await user.type(screen.getByLabelText('Label'), 'Rent');
@@ -39,7 +39,7 @@ describe('ItemForm', () => {
   it('saves a once item anchored at its month', async () => {
     const user = userEvent.setup();
     const onSave = vi.fn();
-    render(<ItemForm direction="in" defaultMonth="2026-01" onSave={onSave} onCancel={() => {}} />);
+    render(<ItemForm currency="SAR" direction="in" defaultMonth="2026-01" onSave={onSave} onCancel={() => {}} />);
     await user.type(screen.getByLabelText('Label'), 'Bonus');
     await user.type(screen.getByLabelText('Amount'), '500');
     await user.selectOptions(screen.getByLabelText('Repeats'), 'once');
@@ -53,7 +53,7 @@ describe('ItemForm', () => {
   it('requires n >= 2 and at least one specific month, and to >= from', async () => {
     const user = userEvent.setup();
     const onSave = vi.fn();
-    render(<ItemForm direction="out" defaultMonth="2026-03" onSave={onSave} onCancel={() => {}} />);
+    render(<ItemForm currency="SAR" direction="out" defaultMonth="2026-03" onSave={onSave} onCancel={() => {}} />);
     await user.type(screen.getByLabelText('Label'), 'Insurance');
     await user.type(screen.getByLabelText('Amount'), '300');
 
@@ -83,7 +83,7 @@ describe('ItemForm', () => {
   it('edits an existing item keeping its id', async () => {
     const user = userEvent.setup();
     const onSave = vi.fn();
-    render(<ItemForm direction="out" defaultMonth="2026-01" onSave={onSave} onCancel={() => {}} initial={{
+    render(<ItemForm currency="SAR" direction="out" defaultMonth="2026-01" onSave={onSave} onCancel={() => {}} initial={{
       id: 'keep', label: 'Rent', direction: 'out', amount: 3000, recurrence: { kind: 'monthly' }, window: { from: '2026-01' },
     }} />);
     const amount = screen.getByLabelText('Amount');

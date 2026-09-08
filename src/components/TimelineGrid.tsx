@@ -20,27 +20,31 @@ export function TimelineGrid({ rows }: Props) {
   const plan = usePlanStore((s) => s.plan);
   const moveItem = usePlanStore((s) => s.moveItem);
   const [addingMonth, setAddingMonth] = useState<MonthKey | null>(null);
+  const monthKeys = rows.map((r) => r.month);
+  /** Months in the plan, plus the item's own month if it currently sits outside the duration. */
+  const moveOptions = (anchor: MonthKey) => (monthKeys.includes(anchor) ? monthKeys : [anchor, ...monthKeys]);
 
   const money = (n: number) => formatMoney(n, plan.settings.currency, locale);
   const incomes = plan.items.filter((i) => i.direction === 'in');
   const expenses = plan.items.filter((i) => i.direction === 'out');
 
   const stickyCell = 'sticky start-0 z-10 bg-surface ps-3 pe-2 text-start';
-  const numCell = 'px-2 py-1 text-end tabular-nums whitespace-nowrap';
+  const numCell = 'px-2 py-1 text-end tabular-nums whitespace-nowrap transition-colors';
 
   const itemRow = (item: PlanItem) => (
     <tr key={item.id} className="border-t border-line">
       <th scope="row" className={`${stickyCell} py-1 font-normal`}>
         <div className="flex items-center gap-2">
           <span className="truncate">{item.label}</span>
-          <input
-            type="month"
+          <select
             aria-label={`${t('moveTo')}: ${item.label}`}
             title={t('moveTo')}
-            className="rounded border border-line px-1 text-xs text-ink-muted"
+            className="rounded border border-line bg-surface px-1 text-xs text-ink-muted transition-colors hover:border-line-strong"
             value={anchorMonth(item)}
-            onChange={(e) => { if (e.target.value) moveItem(item.id, e.target.value); }}
-          />
+            onChange={(e) => moveItem(item.id, e.target.value)}
+          >
+            {moveOptions(anchorMonth(item)).map((m) => <option key={m} value={m}>{formatMonth(m, locale)}</option>)}
+          </select>
         </div>
       </th>
       {rows.map((r) => (
@@ -79,7 +83,7 @@ export function TimelineGrid({ rows }: Props) {
                     type="button"
                     aria-label={t('addOneOff', { month: formatMonth(r.month, locale) })}
                     onClick={() => setAddingMonth(r.month)}
-                    className="rounded border border-line-strong px-1 leading-none text-ink-muted hover:bg-surface-strong"
+                    className="rounded border border-line-strong px-1 leading-none text-ink-muted transition-colors hover:bg-surface-strong"
                   >
                     +
                   </button>

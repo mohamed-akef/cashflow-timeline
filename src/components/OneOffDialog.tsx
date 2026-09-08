@@ -1,19 +1,25 @@
-import { useState, type FormEvent } from 'react';
+import { useId, useState, type FormEvent } from 'react';
 import type { MonthKey } from '../domain/month';
 import type { Direction } from '../domain/plan';
 import { useLocale, useT } from '../i18n';
 import { formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
+import { btnGhost, btnPrimary, chip, fieldLabel, input } from './ui';
 
 interface Props {
   month: MonthKey;
   onClose: () => void;
 }
 
+const DIRECTIONS: Direction[] = ['in', 'out'];
+
+/** Three fields on one line: what, how much, income or expense. */
 export function OneOffDialog({ month, onClose }: Props) {
   const t = useT();
   const locale = useLocale();
+  const amountId = useId();
   const addOneOff = usePlanStore((s) => s.addOneOff);
+  const currency = usePlanStore((s) => s.plan.settings.currency);
   const [label, setLabel] = useState('');
   const [amount, setAmount] = useState('');
   const [direction, setDirection] = useState<Direction>('out');
@@ -29,7 +35,7 @@ export function OneOffDialog({ month, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 dark:bg-black/60 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4 dark:bg-black/60 motion-safe:animate-fade" onClick={onClose}>
       <form
         role="dialog"
         aria-modal="true"
@@ -37,28 +43,40 @@ export function OneOffDialog({ month, onClose }: Props) {
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
         noValidate
-        className="w-full max-w-sm space-y-3 rounded-lg bg-surface p-4 shadow-xl"
+        className="w-full max-w-lg space-y-3 rounded-lg bg-surface p-4 shadow-xl motion-safe:animate-pop"
       >
-        <h2 id="oneoff-title" className="text-lg font-semibold">{t('addOneOff', { month: formatMonth(month, locale, 'long') })}</h2>
-        <label className="block text-sm">
-          <span className="mb-1 block">{t('label')}</span>
-          <input className="w-full rounded border border-line-strong px-2 py-1" value={label} onChange={(e) => setLabel(e.target.value)} autoFocus />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block">{t('amount')}</span>
-          <input className="w-full rounded border border-line-strong px-2 py-1" type="number" inputMode="decimal" min={0} step="any" value={amount} onChange={(e) => setAmount(e.target.value)} />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block">{t('direction')}</span>
-          <select className="w-full rounded border border-line-strong px-2 py-1" value={direction} onChange={(e) => setDirection(e.target.value as Direction)}>
-            <option value="in">{t('directionIn')}</option>
-            <option value="out">{t('directionOut')}</option>
-          </select>
-        </label>
-        {error && <p role="alert" className="text-sm text-red-700 dark:text-red-400">{t(error)}</p>}
+        <h2 id="oneoff-title" className="text-base font-semibold">{t('addOneOff', { month: formatMonth(month, locale, 'long') })}</h2>
+        <div className="flex flex-wrap items-end gap-2">
+          <label className="min-w-36 flex-1">
+            <span className={fieldLabel}>{t('label')}</span>
+            <input className={`${input} w-full`} value={label} onChange={(e) => setLabel(e.target.value)} autoFocus />
+          </label>
+          <div className="w-36">
+            <label htmlFor={amountId} className={fieldLabel}>{t('amount')}</label>
+            <div className="flex items-center gap-1">
+              <input
+                id={amountId} className={`${input} w-full text-end tabular-nums`} type="number" inputMode="decimal" min={0} step="any"
+                value={amount} onChange={(e) => setAmount(e.target.value)}
+              />
+              <span className="text-xs text-ink-faint">{currency}</span>
+            </div>
+          </div>
+          <fieldset>
+            <legend className={fieldLabel}>{t('direction')}</legend>
+            <div className="flex gap-1">
+              {DIRECTIONS.map((d) => (
+                <label key={d}>
+                  <input type="radio" name="direction" className="peer sr-only" value={d} checked={direction === d} onChange={() => setDirection(d)} />
+                  <span className={chip}>{t(d === 'in' ? 'directionIn' : 'directionOut')}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </div>
+        {error && <p role="alert" className="text-sm text-red-700 dark:text-red-400 motion-safe:animate-enter">{t(error)}</p>}
         <div className="flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="rounded px-3 py-1 text-ink-muted hover:bg-surface-muted">{t('cancel')}</button>
-          <button type="submit" className="rounded bg-accent px-3 py-1 text-on-accent hover:bg-accent-hover">{t('add')}</button>
+          <button type="button" onClick={onClose} className={btnGhost}>{t('cancel')}</button>
+          <button type="submit" className={btnPrimary}>{t('add')}</button>
         </div>
       </form>
     </div>

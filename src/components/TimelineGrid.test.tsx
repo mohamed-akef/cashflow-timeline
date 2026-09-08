@@ -30,7 +30,7 @@ describe('TimelineGrid', () => {
     renderGrid();
     expect(screen.getByText('Salary')).toBeInTheDocument();
     expect(screen.getByText('Car')).toBeInTheDocument();
-    expect(screen.getByText('Jan 2026')).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /Jan 2026/ })).toBeInTheDocument();
     // closing: 1100, 1600, 2600
     expect(screen.getByText(/2,600/)).toBeInTheDocument();
   });
@@ -41,15 +41,15 @@ describe('TimelineGrid', () => {
     await user.click(screen.getByRole('button', { name: 'Add a one-off in Mar 2026' }));
     await user.type(screen.getByLabelText('Label'), 'Tyres');
     await user.type(screen.getByLabelText('Amount'), '800');
-    await user.selectOptions(screen.getByLabelText('Type'), 'out');
+    await user.click(screen.getByRole('radio', { name: 'Expense' }));
     await user.click(screen.getByRole('button', { name: 'Add' }));
     const added = usePlanStore.getState().plan.items.at(-1)!;
     expect(added).toMatchObject({ label: 'Tyres', amount: 800, direction: 'out', recurrence: { kind: 'once', month: '2026-03' } });
   });
 
-  it('moves an item with the month input', () => {
+  it('moves an item with the month drop-down', () => {
     renderGrid();
-    const input = screen.getByLabelText('Move to: Car') as HTMLInputElement;
+    const input = screen.getByLabelText('Move to: Car') as HTMLSelectElement;
     expect(input.value).toBe('2026-02');
     fireEvent.change(input, { target: { value: '2026-03' } });
     expect(usePlanStore.getState().plan.items.find((i) => i.id === 'c')!.recurrence).toEqual({ kind: 'once', month: '2026-03' });

@@ -82,19 +82,22 @@ export function Toolbar() {
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 p-3">
         <h1 className="me-auto text-lg font-semibold">{t('appTitle')}</h1>
 
-        <label className="flex items-center gap-1 text-sm">
-          <span>{t('horizon')}</span>
-          <select className={control} aria-label={t('horizon')} value={custom ? 'custom' : String(horizonMonths)} onChange={onHorizonSelect}>
-            {PRESETS.map((n) => <option key={n} value={n}>{t('horizonMonths', { n })}</option>)}
-            <option value="custom">{t('horizonCustom')}</option>
-          </select>
-          {custom && (
-            <input
-              ref={customInputRef}
-              type="number" min={1} max={MAX_HORIZON} aria-label={t('horizon')}
-              className={`${control} w-20`} defaultValue={horizonMonths} onChange={onCustomHorizon}
-            />
-          )}
+        <label className="flex flex-col gap-0.5 text-sm">
+          <span className="flex items-center gap-1">
+            <span>{t('horizon')}</span>
+            <select className={control} aria-label={t('horizon')} value={custom ? 'custom' : String(horizonMonths)} onChange={onHorizonSelect}>
+              {PRESETS.map((n) => <option key={n} value={n}>{t('horizonMonths', { n })}</option>)}
+              <option value="custom">{t('horizonCustom')}</option>
+            </select>
+            {custom && (
+              <input
+                ref={customInputRef}
+                type="number" min={1} max={MAX_HORIZON} aria-label={t('horizon')}
+                className={`${control} w-20`} defaultValue={horizonMonths} onChange={onCustomHorizon}
+              />
+            )}
+          </span>
+          <span className="text-xs text-ink-faint">{t('horizonHint')}</span>
         </label>
 
         <label className="flex items-center gap-1 text-sm">

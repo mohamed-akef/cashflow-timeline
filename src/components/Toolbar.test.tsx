@@ -14,7 +14,8 @@ describe('Toolbar', () => {
   it('changes horizon preset and language', async () => {
     const user = userEvent.setup();
     render(<Toolbar />);
-    await user.selectOptions(screen.getByLabelText('Horizon'), '3');
+    expect(screen.getByText('How many months the plan covers, counting from the start month.')).toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText('Duration'), '3');
     expect(usePlanStore.getState().plan.settings.horizonMonths).toBe(3);
     await user.click(screen.getByRole('button', { name: 'العربية' }));
     expect(usePlanStore.getState().plan.settings.locale).toBe('ar');
@@ -23,8 +24,8 @@ describe('Toolbar', () => {
   it('custom horizon shows a number input', async () => {
     const user = userEvent.setup();
     render(<Toolbar />);
-    await user.selectOptions(screen.getByLabelText('Horizon'), 'custom');
-    const input = screen.getByRole('spinbutton', { name: 'Horizon' });
+    await user.selectOptions(screen.getByLabelText('Duration'), 'custom');
+    const input = screen.getByRole('spinbutton', { name: 'Duration' });
     await user.clear(input);
     await user.type(input, '18');
     expect(usePlanStore.getState().plan.settings.horizonMonths).toBe(18);
@@ -55,18 +56,18 @@ describe('Toolbar', () => {
   it('shows custom mode when the stored horizon is not a preset', () => {
     usePlanStore.setState((s) => ({ plan: { ...s.plan, settings: { ...s.plan.settings, horizonMonths: 24 } } }));
     render(<Toolbar />);
-    expect((screen.getByRole('combobox', { name: 'Horizon' }) as HTMLSelectElement).value).toBe('custom');
-    expect((screen.getByRole('spinbutton', { name: 'Horizon' }) as HTMLInputElement).value).toBe('24');
+    expect((screen.getByRole('combobox', { name: 'Duration' }) as HTMLSelectElement).value).toBe('custom');
+    expect((screen.getByRole('spinbutton', { name: 'Duration' }) as HTMLInputElement).value).toBe('24');
   });
 
   it('refreshes the custom horizon input when the horizon changes externally', () => {
     usePlanStore.setState((s) => ({ plan: { ...s.plan, settings: { ...s.plan.settings, horizonMonths: 24 } } }));
     render(<Toolbar />);
-    expect((screen.getByRole('spinbutton', { name: 'Horizon' }) as HTMLInputElement).value).toBe('24');
+    expect((screen.getByRole('spinbutton', { name: 'Duration' }) as HTMLInputElement).value).toBe('24');
     act(() => {
       usePlanStore.setState((s) => ({ plan: { ...s.plan, settings: { ...s.plan.settings, horizonMonths: 36 } } }));
     });
-    expect((screen.getByRole('spinbutton', { name: 'Horizon' }) as HTMLInputElement).value).toBe('36');
+    expect((screen.getByRole('spinbutton', { name: 'Duration' }) as HTMLInputElement).value).toBe('36');
   });
 
   it('switches the theme and remembers it', async () => {

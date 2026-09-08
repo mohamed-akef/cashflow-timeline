@@ -3,10 +3,8 @@ import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON } from '../domain/plan';
 import { exportFilename, exportPlan } from '../domain/serialize';
 import { useT } from '../i18n';
 import { usePlanStore } from '../store/planStore';
-import { THEME_PREFERENCES, useThemePreference, type ThemePreference } from '../theme';
 
 const PRESETS: readonly number[] = HORIZON_PRESETS;
-const THEME_LABEL = { system: 'themeSystem', light: 'themeLight', dark: 'themeDark' } as const;
 
 /** FileReader rather than File.text(): supported by every browser and by jsdom. */
 const readText = (file: File) =>
@@ -27,9 +25,8 @@ export function Toolbar() {
   const storageError = usePlanStore((s) => s.storageError);
   const clearAll = usePlanStore((s) => s.clearAll);
   const openSetup = usePlanStore((s) => s.openSetup);
-  const [theme, setTheme] = useThemePreference();
 
-  const { horizonMonths, locale, currency } = plan.settings;
+  const { horizonMonths, currency } = plan.settings;
   const [explicitCustom, setExplicitCustom] = useState(false);
   const custom = explicitCustom || !PRESETS.includes(horizonMonths);
   const customInputRef = useRef<HTMLInputElement>(null);
@@ -78,10 +75,8 @@ export function Toolbar() {
   const button = 'rounded border border-line-strong bg-surface px-3 py-1 text-sm hover:bg-surface-muted';
 
   return (
-    <header className="border-b border-line bg-surface">
+    <div className="border-b border-line bg-surface">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 p-3">
-        <h1 className="me-auto text-lg font-semibold">{t('appTitle')}</h1>
-
         <label className="flex flex-col gap-0.5 text-sm">
           <span className="flex items-center gap-1">
             <span>{t('horizon')}</span>
@@ -107,16 +102,6 @@ export function Toolbar() {
           </select>
         </label>
 
-        <label className="flex items-center gap-1 text-sm">
-          <span>{t('theme')}</span>
-          <select className={control} aria-label={t('theme')} value={theme} onChange={(e) => setTheme(e.target.value as ThemePreference)}>
-            {THEME_PREFERENCES.map((p) => <option key={p} value={p}>{t(THEME_LABEL[p])}</option>)}
-          </select>
-        </label>
-
-        <button type="button" className={button} onClick={() => updateSettings({ locale: locale === 'ar' ? 'en' : 'ar' })}>
-          {t('switchLanguage')}
-        </button>
         <button type="button" className={button} onClick={openSetup}>{t('openSetup')}</button>
         <button type="button" className={button} onClick={onExport}>{t('exportJson')}</button>
         <label className={`${button} cursor-pointer`}>
@@ -133,6 +118,6 @@ export function Toolbar() {
         <p role="status" className="mx-auto max-w-7xl px-3 pb-2 text-sm text-amber-700 dark:text-amber-400">{t('storageError')}</p>
       )}
       <p className="mx-auto max-w-7xl px-3 pb-2 text-xs text-ink-faint">{t('privacyNote')}</p>
-    </header>
+    </div>
   );
 }

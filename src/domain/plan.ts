@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { currentMonth, isMonthKey, toIndex, type MonthKey } from './month';
 
 export type Direction = 'in' | 'out';
-export type Locale = 'ar' | 'en';
 
 export const HORIZON_PRESETS = [3, 6, 12] as const;
 export const MAX_HORIZON = 60;
@@ -38,7 +37,6 @@ export const planItemSchema = z.object({
 
 export const planSettingsSchema = z.object({
   currency: z.string().regex(/^[A-Za-z]{3}$/),
-  locale: z.enum(['ar', 'en']),
   startMonth: monthKeySchema,
   horizonMonths: z.number().int().min(1).max(MAX_HORIZON),
   startingBalance: z.number().finite(),
@@ -58,7 +56,6 @@ export type Plan = z.infer<typeof planSchema>;
 export function defaultSettings(now: Date = new Date()): PlanSettings {
   return {
     currency: 'SAR',
-    locale: 'en',
     startMonth: currentMonth(now),
     horizonMonths: 12,
     startingBalance: 0,

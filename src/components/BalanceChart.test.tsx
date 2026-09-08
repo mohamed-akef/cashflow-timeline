@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BalanceChart } from './BalanceChart';
 import { usePlanStore } from '../store/planStore';
+import { useUiStore } from '../store/uiStore';
 import { emptyPlan } from '../domain/plan';
 import type { MonthRow } from '../domain/engine';
 
@@ -11,6 +12,7 @@ const row = (month: string, closing: number): MonthRow => ({
 
 beforeEach(() => {
   usePlanStore.setState({ plan: emptyPlan(new Date(2026, 0, 1)), setupOpen: false });
+  useUiStore.setState({ locale: 'en' });
 });
 
 describe('BalanceChart', () => {
@@ -30,7 +32,7 @@ describe('BalanceChart', () => {
   it('reverses x order in Arabic', () => {
     render(<BalanceChart rows={[row('2026-01', 0), row('2026-02', 0)]} />);
     const ltr = screen.getByTestId('balance-line').getAttribute('points')!;
-    usePlanStore.setState((s) => ({ plan: { ...s.plan, settings: { ...s.plan.settings, locale: 'ar' } } }));
+    useUiStore.setState({ locale: 'ar' });
     render(<BalanceChart rows={[row('2026-01', 0), row('2026-02', 0)]} />);
     const rtl = screen.getAllByTestId('balance-line')[1].getAttribute('points')!;
     const xs = (p: string) => p.trim().split(/\s+/).map((pt) => Number(pt.split(',')[0]));

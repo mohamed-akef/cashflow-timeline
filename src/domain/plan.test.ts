@@ -47,7 +47,6 @@ describe('planSchema', () => {
     const base = emptyPlan();
     expect(planSchema.safeParse({ ...base, settings: { ...base.settings, horizonMonths: 0 } }).success).toBe(false);
     expect(planSchema.safeParse({ ...base, settings: { ...base.settings, horizonMonths: 61 } }).success).toBe(false);
-    expect(planSchema.safeParse({ ...base, settings: { ...base.settings, locale: 'fr' } }).success).toBe(false);
     expect(planSchema.safeParse({ ...base, settings: { ...base.settings, currency: '123' } }).success).toBe(false);
     expect(planSchema.safeParse({ ...base, settings: { ...base.settings, currency: '$$$' } }).success).toBe(false);
     expect(planSchema.safeParse({ ...base, settings: { ...base.settings, currency: 'usd' } }).success).toBe(true);
@@ -55,10 +54,9 @@ describe('planSchema', () => {
 });
 
 describe('defaults', () => {
-  it('defaultSettings uses the current month, SAR, en, 12 months, 0 balance', () => {
+  it('defaultSettings uses the current month, SAR, 12 months, 0 balance', () => {
     expect(defaultSettings(new Date(2026, 8, 7))).toEqual({
       currency: 'SAR',
-      locale: 'en',
       startMonth: '2026-09',
       horizonMonths: 12,
       startingBalance: 0,

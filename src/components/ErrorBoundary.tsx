@@ -1,6 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { t } from '../i18n';
 import { usePlanStore } from '../store/planStore';
+import { useUiStore } from '../store/uiStore';
 
 interface Props {
   children: ReactNode;
@@ -32,7 +33,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.failed) {
-      const locale = usePlanStore.getState().plan.settings.locale;
+      const locale = useUiStore.getState().locale;
       return (
         <div className="flex min-h-screen items-center justify-center bg-canvas p-4">
           <div className="w-full max-w-md space-y-3 rounded-lg bg-surface p-6 text-center shadow-xl">

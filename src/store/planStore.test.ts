@@ -74,8 +74,8 @@ describe('createPlanStore', () => {
   it('updateSettings merges and persists', () => {
     const store = createPlanStore(storage);
     store.getState().savePlan(plan);
-    store.getState().updateSettings({ horizonMonths: 3, locale: 'ar' });
-    expect(store.getState().plan.settings).toMatchObject({ horizonMonths: 3, locale: 'ar', currency: 'SAR' });
+    store.getState().updateSettings({ horizonMonths: 3, currency: 'USD' });
+    expect(store.getState().plan.settings).toMatchObject({ horizonMonths: 3, currency: 'USD' });
     expect(loadStoredPlan(storage)?.settings.horizonMonths).toBe(3);
   });
 

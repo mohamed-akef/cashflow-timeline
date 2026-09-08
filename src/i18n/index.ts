@@ -1,5 +1,4 @@
-import type { Locale } from '../domain/plan';
-import { usePlanStore } from '../store/planStore';
+import { useUiStore, type Locale } from '../store/uiStore';
 import { en, type MessageKey } from './en';
 import { ar } from './ar';
 
@@ -14,7 +13,7 @@ export function t(locale: Locale, key: MessageKey, vars?: Record<string, string 
 }
 
 export function useLocale(): Locale {
-  return usePlanStore((s) => s.plan.settings.locale);
+  return useUiStore((s) => s.locale);
 }
 
 export function useT() {

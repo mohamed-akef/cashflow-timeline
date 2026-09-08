@@ -11,14 +11,12 @@ beforeEach(() => {
 });
 
 describe('Toolbar', () => {
-  it('changes horizon preset and language', async () => {
+  it('changes the duration preset', async () => {
     const user = userEvent.setup();
     render(<Toolbar />);
     expect(screen.getByText('How many months the plan covers, counting from the start month.')).toBeInTheDocument();
     await user.selectOptions(screen.getByLabelText('Duration'), '3');
     expect(usePlanStore.getState().plan.settings.horizonMonths).toBe(3);
-    await user.click(screen.getByRole('button', { name: 'العربية' }));
-    expect(usePlanStore.getState().plan.settings.locale).toBe('ar');
   });
 
   it('custom horizon shows a number input', async () => {
@@ -68,18 +66,5 @@ describe('Toolbar', () => {
       usePlanStore.setState((s) => ({ plan: { ...s.plan, settings: { ...s.plan.settings, horizonMonths: 36 } } }));
     });
     expect((screen.getByRole('spinbutton', { name: 'Duration' }) as HTMLInputElement).value).toBe('36');
-  });
-
-  it('switches the theme and remembers it', async () => {
-    const user = userEvent.setup();
-    document.documentElement.classList.remove('dark');
-    render(<Toolbar />);
-    const select = screen.getByRole('combobox', { name: 'Theme' }) as HTMLSelectElement;
-    expect(select.value).toBe('system');
-    await user.selectOptions(select, 'dark');
-    expect(document.documentElement.classList.contains('dark')).toBe(true);
-    expect(localStorage.getItem('cashflow-timeline:theme')).toBe('dark');
-    await user.selectOptions(select, 'light');
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
   });
 });

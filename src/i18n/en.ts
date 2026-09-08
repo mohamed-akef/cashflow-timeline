@@ -7,7 +7,6 @@ export const en = {
   horizonHint: 'How many months the plan covers, counting from the start month.',
   horizonMonths: '{n} months',
   horizonCustom: 'Custom',
-  switchLanguage: 'العربية',
   currency: 'Currency',
   exportJson: 'Export JSON',
   importJson: 'Import JSON',

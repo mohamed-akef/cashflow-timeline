@@ -18,7 +18,7 @@ function plan(items: PlanItem[], overrides: Partial<Plan['settings']> = {}): Pla
   return {
     schemaVersion: 1,
     settings: {
-      currency: 'SAR', locale: 'en', startMonth: '2026-01', horizonMonths: 6, startingBalance: 0,
+      currency: 'SAR', startMonth: '2026-01', horizonMonths: 6, startingBalance: 0,
       ...overrides,
     },
     items,

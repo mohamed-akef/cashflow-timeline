@@ -1,5 +1,5 @@
 import type { MonthKey } from '../domain/month';
-import type { Locale } from '../domain/plan';
+import type { Locale } from '../store/uiStore';
 
 /** Gregorian calendar + Latin digits are forced for Arabic; ar-SA would default to Umm al-Qura. */
 const INTL_LOCALE: Record<Locale, string> = {

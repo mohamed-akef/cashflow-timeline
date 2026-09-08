@@ -80,6 +80,12 @@ export const en = {
   // Error boundary
   errorTitle: 'Something went wrong',
   errorBody: 'The stored plan could not be displayed. You can clear it and start again — nothing is lost outside this browser.',
+
+  // Theme
+  theme: 'Theme',
+  themeSystem: 'System',
+  themeLight: 'Light',
+  themeDark: 'Dark',
 } as const;
 
 export type MessageKey = keyof typeof en;

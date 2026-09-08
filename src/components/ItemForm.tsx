@@ -64,11 +64,11 @@ export function ItemForm({ direction, initial, defaultMonth, onSave, onCancel }:
     });
   };
 
-  const field = 'w-full rounded border border-slate-300 px-2 py-1';
+  const field = 'w-full rounded border border-line-strong px-2 py-1';
   const labelCls = 'block text-sm';
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
+    <form onSubmit={submit} noValidate className="space-y-3 rounded-lg border border-line bg-surface-muted p-3">
       <label className={labelCls}>
         <span className="mb-1 block">{t('label')}</span>
         <input className={field} value={label} onChange={(e) => setLabel(e.target.value)} autoFocus />
@@ -126,11 +126,11 @@ export function ItemForm({ direction, initial, defaultMonth, onSave, onCancel }:
         <input className={field} value={note} onChange={(e) => setNote(e.target.value)} />
       </label>
 
-      {error && <p role="alert" className="text-sm text-red-700">{t(error)}</p>}
+      {error && <p role="alert" className="text-sm text-red-700 dark:text-red-400">{t(error)}</p>}
 
       <div className="flex justify-end gap-2">
-        <button type="button" onClick={onCancel} className="rounded px-3 py-1 text-slate-700 hover:bg-slate-200">{t('cancel')}</button>
-        <button type="submit" className="rounded bg-slate-900 px-3 py-1 text-white hover:bg-slate-700">{t('save')}</button>
+        <button type="button" onClick={onCancel} className="rounded px-3 py-1 text-ink-muted hover:bg-surface-strong">{t('cancel')}</button>
+        <button type="submit" className="rounded bg-accent px-3 py-1 text-on-accent hover:bg-accent-hover">{t('save')}</button>
       </div>
     </form>
   );

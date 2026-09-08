@@ -76,4 +76,9 @@ export const ar: Record<MessageKey, string> = {
 
   errorTitle: 'حدث خطأ ما',
   errorBody: 'تعذّر عرض الخطة المحفوظة. يمكنك مسحها والبدء من جديد — لا شيء يُفقد خارج هذا المتصفح.',
+
+  theme: 'المظهر',
+  themeSystem: 'النظام',
+  themeLight: 'فاتح',
+  themeDark: 'داكن',
 };

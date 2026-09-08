@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON, type Direction, type Locale, type Plan, type PlanItem } from '../domain/plan';
+import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON, type Direction, type Plan, type PlanItem } from '../domain/plan';
 import { useLocale, useT, type MessageKey } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
@@ -17,7 +17,6 @@ export function SetupDialog() {
   const stored = usePlanStore((s) => s.plan);
   const savePlan = usePlanStore((s) => s.savePlan);
   const closeSetup = usePlanStore((s) => s.closeSetup);
-  const updateSettings = usePlanStore((s) => s.updateSettings);
 
   const [draft, setDraft] = useState<Plan>(stored);
   const [editing, setEditing] = useState<Editing>(null);
@@ -36,11 +35,6 @@ export function SetupDialog() {
   };
 
   const deleteItem = (id: string) => setDraft((d) => ({ ...d, items: d.items.filter((i) => i.id !== id) }));
-
-  const switchLocale = (next: Locale) => {
-    setSettings({ locale: next });
-    updateSettings({ locale: next });
-  };
 
   const field = 'w-full rounded border border-line-strong px-2 py-1';
   const button = 'rounded border border-line-strong bg-surface px-2 py-1 text-sm hover:bg-surface-muted';
@@ -115,13 +109,6 @@ export function SetupDialog() {
               <span className="mb-1 block">{t('currency')}</span>
               <select className={field} value={settings.currency} onChange={(e) => setSettings({ currency: e.target.value })}>
                 {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </label>
-            <label className="block">
-              <span className="mb-1 block">{t('language')}</span>
-              <select className={field} value={settings.locale} onChange={(e) => switchLocale(e.target.value as Locale)}>
-                <option value="en">English</option>
-                <option value="ar">العربية</option>
               </select>
             </label>
           </div>

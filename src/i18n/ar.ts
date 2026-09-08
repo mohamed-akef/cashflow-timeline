@@ -8,7 +8,6 @@ export const ar: Record<MessageKey, string> = {
   horizonHint: 'عدد الأشهر التي تغطيها الخطة بدءًا من شهر البداية.',
   horizonMonths: '{n} أشهر',
   horizonCustom: 'مخصص',
-  switchLanguage: 'English',
   currency: 'العملة',
   exportJson: 'تصدير JSON',
   importJson: 'استيراد JSON',

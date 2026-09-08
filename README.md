@@ -10,9 +10,17 @@ Arabic and English, with full RTL.
 
 ```bash
 pnpm install
-pnpm dev        # http://localhost:5173
+pnpm dev        # http://localhost:5173/cashflow-timeline/
 pnpm test       # Vitest
 pnpm build      # static site in dist/
+```
+
+## Deploy
+
+The app is published on GitHub Pages at <https://mohamed-akef.github.io/cashflow-timeline/>.
+
+```bash
+pnpm deploy:pages   # builds and pushes dist/ to the gh-pages branch
 ```
 
 ## How it works

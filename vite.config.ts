@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
+  // Served from https://mohamed-akef.github.io/cashflow-timeline/ (GitHub Pages
+  // project site), so built asset URLs must carry the repo name.
+  base: '/cashflow-timeline/',
   plugins: [react(), tailwindcss()],
   test: {
     environment: 'jsdom',

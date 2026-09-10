@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { AppBar } from './components/AppBar';
-import { BalanceChart } from './components/BalanceChart';
+import { Charts } from './components/Charts';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { SetupDialog } from './components/SetupDialog';
 import { SummaryStrip } from './components/SummaryStrip';
@@ -29,7 +29,7 @@ export default function App() {
         <Toolbar />
         <main className="mx-auto w-full max-w-7xl flex-1 space-y-4 p-4">
           <SummaryStrip summary={summary} monthCount={rows.length} />
-          <BalanceChart rows={rows} />
+          <Charts rows={rows} />
           <TimelineGrid rows={rows} />
         </main>
         <footer className="mx-auto w-full max-w-7xl px-4 py-5 text-xs text-ink-faint">{t(locale, 'privacyNote')}</footer>

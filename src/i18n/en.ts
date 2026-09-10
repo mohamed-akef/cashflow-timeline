@@ -27,7 +27,13 @@ export const en = {
   summaryNeverRecovers: 'Does not recover within the plan duration',
 
   // Chart + grid
-  chartTitle: 'Closing balance by month',
+  chartClosing: 'Closing balance by month',
+  chartInOut: 'Income and expenses by month',
+  chartNet: 'Net change by month',
+  chartView: 'Chart',
+  viewClosing: 'Balance',
+  viewInOut: 'In vs out',
+  viewNet: 'Net',
   gridTitle: 'Month by month',
   opening: 'Opening',
   totalIn: 'Total in',

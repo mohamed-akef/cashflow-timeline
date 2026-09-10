@@ -19,6 +19,11 @@ export function formatAmount(amount: number, locale: Locale): string {
   return new Intl.NumberFormat(INTL_LOCALE[locale], { maximumFractionDigits: 2 }).format(amount);
 }
 
+/** A short axis figure: 14K, 1.2M. Latin digits in both locales. */
+export function formatCompact(amount: number, locale: Locale): string {
+  return new Intl.NumberFormat(INTL_LOCALE[locale], { notation: 'compact', maximumFractionDigits: 1 }).format(amount);
+}
+
 function monthDate(month: MonthKey): Date {
   const year = Number(month.slice(0, 4));
   const m = Number(month.slice(5, 7));

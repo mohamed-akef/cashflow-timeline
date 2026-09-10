@@ -17,10 +17,18 @@ export function AppBar() {
 
   return (
     <header className="border-b border-line bg-surface">
-      <div className="mx-auto flex max-w-7xl items-center gap-3 px-3 py-2">
-        <h1 className="me-auto text-lg font-semibold">{t('appTitle')}</h1>
+      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2">
+        <h1 className="me-auto flex items-center gap-2.5 text-base font-semibold tracking-tight text-ink">
+          {/* Wordmark: three rising bars in the accent, the shape of a balance climbing. */}
+          <span aria-hidden="true" className="flex items-end gap-0.5">
+            <span className="h-2 w-1 rounded-sm bg-accent/50" />
+            <span className="h-3 w-1 rounded-sm bg-accent/75" />
+            <span className="h-4 w-1 rounded-sm bg-accent" />
+          </span>
+          {t('appTitle')}
+        </h1>
 
-        <div role="group" aria-label={t('language')} className="flex overflow-hidden rounded border border-line-strong text-sm">
+        <div role="group" aria-label={t('language')} className="flex overflow-hidden rounded-md border border-line-strong text-sm font-medium">
           {LOCALES.map((l) => (
             <button
               key={l}
@@ -29,7 +37,7 @@ export function AppBar() {
               title={LOCALE_NAME[l]}
               aria-pressed={locale === l}
               onClick={() => setLocale(l)}
-              className={`px-3 py-1 transition-colors ${locale === l ? 'bg-accent text-on-accent' : 'bg-surface hover:bg-surface-muted'}`}
+              className={`px-3 py-1 transition-colors ${locale === l ? 'bg-accent text-on-accent' : 'bg-surface text-ink-muted hover:bg-accent-soft hover:text-accent'}`}
             >
               {LOCALE_LABEL[l]}
             </button>

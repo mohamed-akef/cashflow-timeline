@@ -19,14 +19,16 @@ export const en = {
   storageError: 'Could not save on this device. Changes will be lost when you close the tab — export your plan to keep it.',
 
   // Summary
-  summaryAllPositive: 'All {n} months positive ✓',
-  summaryFirstNegative: 'First negative: {month}',
-  summaryLowest: 'Lowest: {amount} in {month}',
-  summaryRecovers: 'Recovers: {month}',
+  summaryAllPositive: 'Positive in all {n} months ✓',
+  summaryLowest: 'Lowest balance',
+  summaryIn: 'in {month}',
+  summaryFirstNegative: 'First negative month',
+  summaryRecovers: 'Back above zero',
   summaryNeverRecovers: 'Does not recover within the plan duration',
 
   // Chart + grid
   chartTitle: 'Closing balance by month',
+  gridTitle: 'Month by month',
   opening: 'Opening',
   totalIn: 'Total in',
   totalOut: 'Total out',

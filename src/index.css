@@ -4,10 +4,14 @@
    override the OS setting from the toolbar. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Semantic colours. Utilities such as bg-surface or text-ink-muted resolve to
-   these variables, which flip under .dark, so component code never names a
-   light-only shade. State colours (red/emerald/amber) stay as Tailwind
-   palette classes with explicit dark: variants at their few call sites. */
+/* Semantic colours. Utilities such as bg-surface or text-gain resolve to these
+   variables, which flip under .dark, so component code never names a
+   light-only shade and never carries a dark: twin.
+
+   Roles: canvas/surface/* are the big quiet areas (low chroma, faintly blue so
+   the accent feels at home); ink/* is text; line/* is borders; accent is the
+   one interactive colour (cobalt); gain/loss/warn are money semantics
+   (income, expense, warning) and each has a -soft tint for bands and cards. */
 @theme inline {
   --color-canvas: var(--canvas);
   --color-surface: var(--surface);
@@ -21,46 +25,23 @@
   --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
+  --color-gain: var(--gain);
+  --color-gain-soft: var(--gain-soft);
+  --color-loss: var(--loss);
+  --color-loss-soft: var(--loss-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
 }
 
-:root {
-  color-scheme: light;
-  --canvas: #f8fafc;          /* slate-50  */
-  --surface: #ffffff;
-  --surface-muted: #f1f5f9;   /* slate-100 */
-  --surface-strong: #e2e8f0;  /* slate-200 */
-  --ink: #0f172a;             /* slate-900 */
-  --ink-muted: #475569;       /* slate-600 */
-  --ink-faint: #64748b;       /* slate-500 */
-  --ink-ghost: #cbd5e1;       /* slate-300 */
-  --line: #e2e8f0;            /* slate-200 */
-  --line-strong: #cbd5e1;     /* slate-300 */
-  --accent: #0f172a;          /* slate-900 */
-  --accent-hover: #334155;    /* slate-700 */
-  --on-accent: #ffffff;
-}
-
-.dark {
-  color-scheme: dark;
-  --canvas: #020617;          /* slate-950 */
-  --surface: #0f172a;         /* slate-900 */
-  --surface-muted: #1e293b;   /* slate-800 */
-  --surface-strong: #334155;  /* slate-700 */
-  --ink: #f1f5f9;             /* slate-100 */
-  --ink-muted: #94a3b8;       /* slate-400 */
-  --ink-faint: #64748b;       /* slate-500 */
-  --ink-ghost: #475569;       /* slate-600 */
-  --line: #1e293b;            /* slate-800 */
-  --line-strong: #334155;     /* slate-700 */
-  --accent: #e2e8f0;          /* slate-200 */
-  --accent-hover: #cbd5e1;    /* slate-300 */
-  --on-accent: #0f172a;       /* slate-900 */
-}
-
-/* Entrance motion for forms, dialogs and inline messages. Used with the
-   motion-safe: variant so "reduce motion" users get an instant change. */
 @theme {
+  /* Self-hosted (see src/main.tsx): the app makes no network requests.
+     Plex Sans Arabic sits second so Arabic glyphs fall through to it. */
+  --font-sans: 'IBM Plex Sans Variable', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+
+  /* Entrance motion for forms, dialogs and inline messages. Used with the
+     motion-safe: variant so "reduce motion" users get an instant change. */
   --animate-enter: enter 150ms ease-out;
   --animate-fade: fade 150ms ease-out;
   --animate-pop: pop 150ms ease-out;
@@ -74,4 +55,58 @@
   @keyframes pop {
     from { opacity: 0; transform: scale(0.97); }
   }
+}
+
+:root {
+  color-scheme: light;
+  accent-color: var(--accent);   /* native checkboxes, month pickers, progress */
+  --canvas: #eef2f9;
+  --surface: #ffffff;
+  --surface-muted: #f3f6fc;
+  --surface-strong: #e2e8f4;
+  --ink: #131c30;
+  --ink-muted: #4b5872;
+  --ink-faint: #5f6d88;
+  --ink-ghost: #c2cadb;
+  --line: #dfe5f0;
+  --line-strong: #c3cddf;
+  --accent: #1d4fd7;
+  --accent-hover: #163fae;
+  --accent-soft: #e5ecfd;
+  --on-accent: #ffffff;
+  --gain: #15803d;
+  --gain-soft: #e7f7ed;
+  --loss: #be123c;
+  --loss-soft: #fde7ed;
+  --warn: #b45309;
+  --warn-soft: #fdf3e0;
+}
+
+.dark {
+  color-scheme: dark;
+  --canvas: #0b1220;
+  --surface: #121b2e;
+  --surface-muted: #19243a;
+  --surface-strong: #25324c;
+  --ink: #e7ecf6;
+  --ink-muted: #a4afc5;
+  --ink-faint: #7f8ca7;
+  --ink-ghost: #3d4a63;
+  --line: #1f2b41;
+  --line-strong: #2f3d58;
+  --accent: #79a4ff;
+  --accent-hover: #9dbcff;
+  --accent-soft: #1b2b52;
+  --on-accent: #0b1220;
+  --gain: #4ade80;
+  --gain-soft: #11291d;
+  --loss: #fb7185;
+  --loss-soft: #3b1523;
+  --warn: #fbbf24;
+  --warn-soft: #3a2a0c;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }

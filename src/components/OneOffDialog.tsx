@@ -43,7 +43,7 @@ export function OneOffDialog({ month, onClose }: Props) {
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
         noValidate
-        className="w-full max-w-lg space-y-3 rounded-lg bg-surface p-4 shadow-xl motion-safe:animate-pop"
+        className="w-full max-w-lg space-y-3 rounded-xl border border-line bg-surface p-4 shadow-xl motion-safe:animate-pop"
       >
         <h2 id="oneoff-title" className="text-base font-semibold">{t('addOneOff', { month: formatMonth(month, locale, 'long') })}</h2>
         <div className="flex flex-wrap items-end gap-2">
@@ -73,7 +73,7 @@ export function OneOffDialog({ month, onClose }: Props) {
             </div>
           </fieldset>
         </div>
-        {error && <p role="alert" className="text-sm text-red-700 dark:text-red-400 motion-safe:animate-enter">{t(error)}</p>}
+        {error && <p role="alert" className="text-sm text-loss motion-safe:animate-enter">{t(error)}</p>}
         <div className="flex justify-end gap-2">
           <button type="button" onClick={onClose} className={btnGhost}>{t('cancel')}</button>
           <button type="submit" className={btnPrimary}>{t('add')}</button>

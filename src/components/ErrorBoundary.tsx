@@ -36,12 +36,12 @@ export class ErrorBoundary extends Component<Props, State> {
       const locale = useUiStore.getState().locale;
       return (
         <div className="flex min-h-screen items-center justify-center bg-canvas p-4">
-          <div className="w-full max-w-md space-y-3 rounded-lg bg-surface p-6 text-center shadow-xl">
+          <div className="w-full max-w-md space-y-3 rounded-xl border border-line bg-surface p-6 text-center shadow-xl">
             <h1 className="text-xl font-semibold">{t(locale, 'errorTitle')}</h1>
             <p className="text-sm text-ink-muted">{t(locale, 'errorBody')}</p>
             <button
               type="button"
-              className="rounded bg-accent px-4 py-1.5 text-on-accent hover:bg-accent-hover"
+              className="rounded-md bg-accent px-4 py-1.5 font-medium text-on-accent transition-colors hover:bg-accent-hover"
               onClick={this.onClear}
             >
               {t(locale, 'clearAll')}

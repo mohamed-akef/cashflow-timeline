@@ -16,7 +16,7 @@ describe('dictionaries', () => {
 
 describe('t', () => {
   it('interpolates {vars}', () => {
-    expect(t('en', 'summaryAllPositive', { n: 6 })).toBe('All 6 months positive ✓');
+    expect(t('en', 'summaryAllPositive', { n: 6 })).toBe('Positive in all 6 months ✓');
     expect(t('ar', 'summaryAllPositive', { n: 6 })).toContain('6');
   });
 });

@@ -11,7 +11,8 @@ beforeEach(() => {
 describe('SummaryStrip', () => {
   it('shows the all-positive message', () => {
     render(<SummaryStrip monthCount={6} summary={{ allPositive: true, lowest: { month: '2026-02', balance: 10 } }} />);
-    expect(screen.getByText('All 6 months positive ✓')).toBeInTheDocument();
+    expect(screen.getByText('Positive in all 6 months ✓')).toBeInTheDocument();
+    expect(screen.getByText(/10/)).toBeInTheDocument();
   });
 
   it('shows first negative, lowest and recovery', () => {
@@ -19,9 +20,10 @@ describe('SummaryStrip', () => {
       allPositive: false, firstNegative: '2026-03',
       lowest: { month: '2026-04', balance: -4250 }, recovery: '2026-06',
     }} />);
-    expect(screen.getByText('First negative: Mar 2026')).toBeInTheDocument();
-    expect(screen.getByText(/Lowest: .*4,250.* in Apr 2026/)).toBeInTheDocument();
-    expect(screen.getByText('Recovers: Jun 2026')).toBeInTheDocument();
+    expect(screen.getByText('First negative month').nextElementSibling).toHaveTextContent('Mar 2026');
+    expect(screen.getByText(/4,250/)).toBeInTheDocument();
+    expect(screen.getByText('in Apr 2026')).toBeInTheDocument();
+    expect(screen.getByText('Back above zero').nextElementSibling).toHaveTextContent('Jun 2026');
   });
 
   it('shows never-recovers when recovery is absent', () => {

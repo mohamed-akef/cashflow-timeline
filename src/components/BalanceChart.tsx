@@ -3,7 +3,7 @@ import type { MonthRow } from '../domain/engine';
 import { useLocale, useT } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
-import { card, sectionTitle } from './ui';
+import { Card, CardContent, CardHeader, CardTitle } from './ui';
 
 const W = 960;
 const H = 240;
@@ -51,8 +51,11 @@ export function BalanceChart({ rows }: Props) {
   const wash = `${uid}-wash`;
 
   return (
-    <figure className={`${card} p-4`}>
-      <figcaption className={`mb-2 ${sectionTitle}`}>{t('chartTitle')}</figcaption>
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle as="h2">{t('chartTitle')}</CardTitle>
+      </CardHeader>
+      <CardContent>
       <svg role="img" aria-label={t('chartTitle')} viewBox={`0 0 ${W} ${H}`} className="h-auto w-full">
         <defs>
           <clipPath id={aboveClip}>
@@ -88,6 +91,7 @@ export function BalanceChart({ rows }: Props) {
           </g>
         ))}
       </svg>
-    </figure>
+      </CardContent>
+    </Card>
   );
 }

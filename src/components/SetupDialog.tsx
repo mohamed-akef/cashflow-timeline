@@ -55,7 +55,7 @@ export function SetupDialog() {
                 <span className="me-auto flex flex-wrap items-center gap-x-2 gap-y-1">
                   <span className="font-medium">{item.label}</span>
                   <span className="tabular-nums text-ink-muted">{formatMoney(item.amount, settings.currency, locale)}</span>
-                  <Badge tone={direction === 'in' ? 'gain' : 'loss'}>{t(RECURRENCE_KEY[item.recurrence.kind])}</Badge>
+                  <Badge>{t(RECURRENCE_KEY[item.recurrence.kind])}</Badge>
                   <span className="text-xs text-ink-faint">
                     {formatMonth(item.window.from, locale)}
                     {item.window.to ? ` → ${formatMonth(item.window.to, locale)}` : ''}

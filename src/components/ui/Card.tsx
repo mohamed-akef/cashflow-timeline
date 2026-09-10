@@ -1,20 +1,8 @@
 import type { ComponentProps } from 'react';
 
-/** A bordered panel on the canvas. Tone tints the border and fill for status cards. */
-export type CardTone = 'default' | 'gain' | 'loss';
-
-const tones: Record<CardTone, string> = {
-  default: 'border-line bg-surface',
-  gain: 'border-gain/30 bg-gain-soft',
-  loss: 'border-loss/30 bg-loss-soft',
-};
-
-interface CardProps extends ComponentProps<'div'> {
-  tone?: CardTone;
-}
-
-export function Card({ tone = 'default', className = '', ...props }: CardProps) {
-  return <div className={`rounded-lg border text-ink shadow-sm ${tones[tone]} ${className}`} {...props} />;
+/** A bordered panel on the canvas. */
+export function Card({ className = '', ...props }: ComponentProps<'div'>) {
+  return <div className={`rounded-lg border border-line bg-surface text-ink shadow-sm ${className}`} {...props} />;
 }
 
 export function CardHeader({ className = '', ...props }: ComponentProps<'div'>) {

@@ -80,7 +80,7 @@ export function BalanceChart({ rows }: Props) {
             <rect x={0} y={zeroY} width={W} height={Math.max(0, H - zeroY)} />
           </clipPath>
           <linearGradient id={wash} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" className="[stop-color:var(--accent)]" stopOpacity={0.28} />
+            <stop offset="0" className="[stop-color:var(--accent)]" stopOpacity={0.16} />
             <stop offset="1" className="[stop-color:var(--accent)]" stopOpacity={0.02} />
           </linearGradient>
         </defs>
@@ -88,7 +88,7 @@ export function BalanceChart({ rows }: Props) {
           <polygon points={areaPoints} fill={`url(#${wash})`} clipPath={`url(#${aboveClip})`} />
         )}
         {hasNegative && (
-          <polygon data-testid="negative-area" points={areaPoints} className="fill-loss" fillOpacity={0.22} clipPath={`url(#${belowClip})`} />
+          <polygon data-testid="negative-area" points={areaPoints} className="fill-loss" fillOpacity={0.14} clipPath={`url(#${belowClip})`} />
         )}
         <line x1={PAD.x} x2={W - PAD.x} y1={zeroY} y2={zeroY} className="stroke-ink-faint" strokeDasharray="4 4" />
         <polyline data-testid="balance-line" points={points} fill="none" className="stroke-accent" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />

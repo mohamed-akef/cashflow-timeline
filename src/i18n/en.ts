@@ -35,6 +35,7 @@ export const en = {
   net: 'Net',
   closing: 'Closing balance',
   item: 'Item',
+  amountsIn: 'Amounts in {currency}',
   income: 'Income',
   expenses: 'Expenses',
   noItems: 'No items yet. Open Setup to add your income and expenses.',

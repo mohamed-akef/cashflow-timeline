@@ -11,6 +11,14 @@ export function formatMoney(amount: number, currency: string, locale: Locale): s
   return new Intl.NumberFormat(INTL_LOCALE[locale], { style: 'currency', currency }).format(amount);
 }
 
+/**
+ * A bare figure for dense tables: no currency code (the table states it once)
+ * and no ".00" — decimals appear only when the amount has them.
+ */
+export function formatAmount(amount: number, locale: Locale): string {
+  return new Intl.NumberFormat(INTL_LOCALE[locale], { maximumFractionDigits: 2 }).format(amount);
+}
+
 function monthDate(month: MonthKey): Date {
   const year = Number(month.slice(0, 4));
   const m = Number(month.slice(5, 7));

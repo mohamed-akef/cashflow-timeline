@@ -4,7 +4,7 @@ import { useLocale, useT, type MessageKey } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
 import { ItemForm } from './ItemForm';
-import { btnDanger, btnPrimary, btnSecondary, fieldLabel, input, sectionTitle } from './ui';
+import { Badge, Button, CardContent, CardDescription, CardHeader, CardTitle, Dialog, Field, Input, Select } from './ui';
 
 type Editing = { direction: Direction; item?: PlanItem } | null;
 
@@ -37,9 +37,8 @@ export function SetupDialog() {
 
   const deleteItem = (id: string) => setDraft((d) => ({ ...d, items: d.items.filter((i) => i.id !== id) }));
 
-  const field = `${input} w-full`;
-  const button = btnSecondary;
   const { settings } = draft;
+  const sectionTitle = 'text-sm font-semibold text-ink';
 
   const list = (direction: Direction, title: MessageKey, addKey: MessageKey) => {
     const items = draft.items.filter((i) => i.direction === direction);
@@ -47,23 +46,27 @@ export function SetupDialog() {
       <section className="space-y-2">
         <div className="flex items-center justify-between">
           <h3 className={sectionTitle}>{t(title)}</h3>
-          <button type="button" className={button} onClick={() => setEditing({ direction })}>{t(addKey)}</button>
+          <Button size="sm" onClick={() => setEditing({ direction })}>{t(addKey)}</Button>
         </div>
-        <ul className="divide-y divide-line rounded border border-line">
-          {items.map((item) => (
-            <li key={item.id} className="flex items-center gap-3 px-3 py-1.5 text-sm">
-              <span className="me-auto">
-                <span className="font-medium">{item.label}</span>
-                <span className="ms-2 text-ink-faint">
-                  {formatMoney(item.amount, settings.currency, locale)} · {t(RECURRENCE_KEY[item.recurrence.kind])} · {formatMonth(item.window.from, locale)}
-                  {item.window.to ? ` → ${formatMonth(item.window.to, locale)}` : ''}
+        {items.length > 0 && (
+          <ul className="divide-y divide-line rounded-md border border-line">
+            {items.map((item) => (
+              <li key={item.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 text-sm">
+                <span className="me-auto flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="font-medium">{item.label}</span>
+                  <span className="tabular-nums text-ink-muted">{formatMoney(item.amount, settings.currency, locale)}</span>
+                  <Badge tone={direction === 'in' ? 'gain' : 'loss'}>{t(RECURRENCE_KEY[item.recurrence.kind])}</Badge>
+                  <span className="text-xs text-ink-faint">
+                    {formatMonth(item.window.from, locale)}
+                    {item.window.to ? ` → ${formatMonth(item.window.to, locale)}` : ''}
+                  </span>
                 </span>
-              </span>
-              <button type="button" className={button} onClick={() => setEditing({ direction, item })}>{t('edit')}</button>
-              <button type="button" className={btnDanger} onClick={() => deleteItem(item.id)}>{t('delete')}</button>
-            </li>
-          ))}
-        </ul>
+                <Button size="sm" onClick={() => setEditing({ direction, item })}>{t('edit')}</Button>
+                <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>{t('delete')}</Button>
+              </li>
+            ))}
+          </ul>
+        )}
         {editing?.direction === direction && (
           <ItemForm
             direction={direction}
@@ -79,56 +82,49 @@ export function SetupDialog() {
   };
 
   return (
-    <div className="fixed inset-0 z-10 flex items-start justify-center overflow-y-auto bg-black/40 p-4 dark:bg-black/60 motion-safe:animate-fade">
-      <div role="dialog" aria-modal="true" aria-labelledby="setup-title" className="w-full max-w-2xl space-y-4 rounded-xl border border-line bg-surface p-4 shadow-xl motion-safe:animate-pop">
-        <h2 id="setup-title" className="text-lg font-semibold">{t('setupTitle')}</h2>
+    <Dialog labelledBy="setup-title" align="top" size="lg">
+      <CardHeader>
+        <CardTitle as="h2" id="setup-title">{t('setupTitle')}</CardTitle>
+        <CardDescription>{t('privacyNote')}</CardDescription>
+      </CardHeader>
 
+      <CardContent className="space-y-5">
         <section className="space-y-2">
           <h3 className={sectionTitle}>{t('basics')}</h3>
-          <div className="flex flex-wrap items-start gap-3 text-sm">
-            <label className="block w-36">
-              <span className={fieldLabel}>{t('startingBalance')}</span>
-              <input className={field} type="number" step="any" value={balanceText}
+          <div className="flex flex-wrap items-start gap-3">
+            <Field label={t('startingBalance')} className="w-36">
+              <Input size="default" className="text-end tabular-nums" type="number" step="any" value={balanceText}
                 onChange={(e) => {
                   setBalanceText(e.target.value);
                   const n = Number(e.target.value);
                   if (e.target.value !== '' && Number.isFinite(n)) setSettings({ startingBalance: n });
                 }} />
-            </label>
-            <label className="block w-40">
-              <span className={fieldLabel}>{t('startMonth')}</span>
-              <input className={field} type="month" value={settings.startMonth}
+            </Field>
+            <Field label={t('startMonth')} className="w-40">
+              <Input size="default" type="month" value={settings.startMonth}
                 onChange={(e) => e.target.value && setSettings({ startMonth: e.target.value })} />
-            </label>
-            <label className="block w-48">
-              <span className={fieldLabel}>{t('horizon')}</span>
-              <input className={field} type="number" min={1} max={MAX_HORIZON} list="horizon-presets" value={settings.horizonMonths}
+            </Field>
+            <Field label={t('horizon')} hint={t('horizonHint')} className="w-48">
+              <Input size="default" type="number" min={1} max={MAX_HORIZON} list="horizon-presets" value={settings.horizonMonths}
                 onChange={(e) => { const n = Math.round(Number(e.target.value)); if (n >= 1 && n <= MAX_HORIZON) setSettings({ horizonMonths: n }); }} />
-              <datalist id="horizon-presets">{HORIZON_PRESETS.map((n) => <option key={n} value={n} />)}</datalist>
-              <span className="mt-1 block text-xs text-ink-faint">{t('horizonHint')}</span>
-            </label>
-            <label className="block w-24">
-              <span className={fieldLabel}>{t('currency')}</span>
-              <select className={field} value={settings.currency} onChange={(e) => setSettings({ currency: e.target.value })}>
+            </Field>
+            <datalist id="horizon-presets">{HORIZON_PRESETS.map((n) => <option key={n} value={n} />)}</datalist>
+            <Field label={t('currency')} className="w-24">
+              <Select size="default" value={settings.currency} onChange={(e) => setSettings({ currency: e.target.value })}>
                 {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </label>
+              </Select>
+            </Field>
           </div>
         </section>
 
         {list('in', 'income', 'addIncome')}
         {list('out', 'expenses', 'addExpense')}
+      </CardContent>
 
-        <div className="flex justify-end gap-2 border-t border-line pt-3">
-          {canCancel && (
-            <button type="button" className={button} onClick={closeSetup}>{t('cancel')}</button>
-          )}
-          <button type="button" className={btnPrimary} onClick={() => savePlan(draft)}>
-            {t('savePlan')}
-          </button>
-        </div>
-        <p className="text-xs text-ink-faint">{t('privacyNote')}</p>
+      <div className="flex items-center justify-end gap-2 border-t border-line p-4">
+        {canCancel && <Button onClick={closeSetup}>{t('cancel')}</Button>}
+        <Button variant="primary" onClick={() => savePlan(draft)}>{t('savePlan')}</Button>
       </div>
-    </div>
+    </Dialog>
   );
 }

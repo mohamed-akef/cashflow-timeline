@@ -2,6 +2,7 @@ import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { t } from '../i18n';
 import { usePlanStore } from '../store/planStore';
 import { useUiStore } from '../store/uiStore';
+import { Button, Card, CardDescription, CardFooter, CardHeader, CardTitle } from './ui';
 
 interface Props {
   children: ReactNode;
@@ -36,17 +37,15 @@ export class ErrorBoundary extends Component<Props, State> {
       const locale = useUiStore.getState().locale;
       return (
         <div className="flex min-h-screen items-center justify-center bg-canvas p-4">
-          <div className="w-full max-w-md space-y-3 rounded-xl border border-line bg-surface p-6 text-center shadow-xl">
-            <h1 className="text-xl font-semibold">{t(locale, 'errorTitle')}</h1>
-            <p className="text-sm text-ink-muted">{t(locale, 'errorBody')}</p>
-            <button
-              type="button"
-              className="rounded-md bg-accent px-4 py-1.5 font-medium text-on-accent transition-colors hover:bg-accent-hover"
-              onClick={this.onClear}
-            >
-              {t(locale, 'clearAll')}
-            </button>
-          </div>
+          <Card className="w-full max-w-md text-center">
+            <CardHeader>
+              <CardTitle as="h1">{t(locale, 'errorTitle')}</CardTitle>
+              <CardDescription>{t(locale, 'errorBody')}</CardDescription>
+            </CardHeader>
+            <CardFooter className="justify-center">
+              <Button variant="primary" onClick={this.onClear}>{t(locale, 'clearAll')}</Button>
+            </CardFooter>
+          </Card>
         </div>
       );
     }

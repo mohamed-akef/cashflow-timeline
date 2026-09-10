@@ -1,10 +1,10 @@
-import { useId, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import type { MonthKey } from '../domain/month';
 import type { Direction } from '../domain/plan';
 import { useLocale, useT } from '../i18n';
 import { formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
-import { btnGhost, btnPrimary, chip, fieldLabel, input } from './ui';
+import { Alert, Button, CardContent, CardFooter, CardHeader, CardTitle, Chip, Dialog, Field, Input, labelClass } from './ui';
 
 interface Props {
   month: MonthKey;
@@ -17,7 +17,6 @@ const DIRECTIONS: Direction[] = ['in', 'out'];
 export function OneOffDialog({ month, onClose }: Props) {
   const t = useT();
   const locale = useLocale();
-  const amountId = useId();
   const addOneOff = usePlanStore((s) => s.addOneOff);
   const currency = usePlanStore((s) => s.plan.settings.currency);
   const [label, setLabel] = useState('');
@@ -35,50 +34,45 @@ export function OneOffDialog({ month, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4 dark:bg-black/60 motion-safe:animate-fade" onClick={onClose}>
-      <form
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="oneoff-title"
-        onClick={(e) => e.stopPropagation()}
-        onSubmit={submit}
-        noValidate
-        className="w-full max-w-lg space-y-3 rounded-xl border border-line bg-surface p-4 shadow-xl motion-safe:animate-pop"
-      >
-        <h2 id="oneoff-title" className="text-base font-semibold">{t('addOneOff', { month: formatMonth(month, locale, 'long') })}</h2>
-        <div className="flex flex-wrap items-end gap-2">
-          <label className="min-w-36 flex-1">
-            <span className={fieldLabel}>{t('label')}</span>
-            <input className={`${input} w-full`} value={label} onChange={(e) => setLabel(e.target.value)} autoFocus />
-          </label>
-          <div className="w-36">
-            <label htmlFor={amountId} className={fieldLabel}>{t('amount')}</label>
-            <div className="flex items-center gap-1">
-              <input
-                id={amountId} className={`${input} w-full text-end tabular-nums`} type="number" inputMode="decimal" min={0} step="any"
-                value={amount} onChange={(e) => setAmount(e.target.value)}
-              />
-              <span className="text-xs text-ink-faint">{currency}</span>
-            </div>
+    <Dialog labelledBy="oneoff-title" onDismiss={onClose}>
+      <form onSubmit={submit} noValidate>
+        <CardHeader>
+          <CardTitle as="h2" id="oneoff-title">{t('addOneOff', { month: formatMonth(month, locale, 'long') })}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex flex-wrap items-end gap-2">
+            <Field label={t('label')} className="min-w-36 flex-1">
+              <Input value={label} onChange={(e) => setLabel(e.target.value)} autoFocus />
+            </Field>
+            <Field label={t('amount')} className="w-36">
+              {(id) => (
+                <div className="flex items-center gap-1">
+                  <Input
+                    id={id} className="min-w-0 flex-1 text-end tabular-nums" type="number" inputMode="decimal" min={0} step="any"
+                    value={amount} onChange={(e) => setAmount(e.target.value)}
+                  />
+                  <span className="text-xs text-ink-faint">{currency}</span>
+                </div>
+              )}
+            </Field>
+            <fieldset>
+              <legend className={`${labelClass} mb-1.5`}>{t('direction')}</legend>
+              <div className="flex gap-1">
+                {DIRECTIONS.map((d) => (
+                  <Chip key={d} type="radio" name="direction" value={d} checked={direction === d} onChange={() => setDirection(d)}>
+                    {t(d === 'in' ? 'directionIn' : 'directionOut')}
+                  </Chip>
+                ))}
+              </div>
+            </fieldset>
           </div>
-          <fieldset>
-            <legend className={fieldLabel}>{t('direction')}</legend>
-            <div className="flex gap-1">
-              {DIRECTIONS.map((d) => (
-                <label key={d}>
-                  <input type="radio" name="direction" className="peer sr-only" value={d} checked={direction === d} onChange={() => setDirection(d)} />
-                  <span className={chip}>{t(d === 'in' ? 'directionIn' : 'directionOut')}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-        </div>
-        {error && <p role="alert" className="text-sm text-loss motion-safe:animate-enter">{t(error)}</p>}
-        <div className="flex justify-end gap-2">
-          <button type="button" onClick={onClose} className={btnGhost}>{t('cancel')}</button>
-          <button type="submit" className={btnPrimary}>{t('add')}</button>
-        </div>
+          {error && <Alert tone="destructive">{t(error)}</Alert>}
+        </CardContent>
+        <CardFooter className="justify-end">
+          <Button variant="ghost" size="sm" onClick={onClose}>{t('cancel')}</Button>
+          <Button type="submit" variant="primary" size="sm">{t('add')}</Button>
+        </CardFooter>
       </form>
-    </div>
+    </Dialog>
   );
 }

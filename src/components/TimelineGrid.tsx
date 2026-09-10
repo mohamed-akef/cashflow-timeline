@@ -6,7 +6,7 @@ import { useLocale, useT } from '../i18n';
 import { formatAmount, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
 import { OneOffDialog } from './OneOffDialog';
-import { btnPrimary, card, sectionTitle } from './ui';
+import { Button, Card, CardDescription, CardTitle, Select, focusRing } from './ui';
 
 interface Props {
   rows: MonthRow[];
@@ -53,15 +53,15 @@ export function TimelineGrid({ rows }: Props) {
       <th scope="row" className={`${stickyCell} py-1.5 font-normal`}>
         <div className="flex items-center gap-2">
           <span className="truncate">{item.label}</span>
-          <select
+          <Select
+            size="xs"
             aria-label={`${t('moveTo')}: ${item.label}`}
             title={t('moveTo')}
-            className="rounded border border-line bg-surface px-1 text-xs text-ink-muted transition-colors hover:border-accent hover:text-accent"
             value={anchorMonth(item)}
             onChange={(e) => moveItem(item.id, e.target.value)}
           >
             {moveOptions(anchorMonth(item)).map((m) => <option key={m} value={m}>{formatMonth(m, locale)}</option>)}
-          </select>
+          </Select>
         </div>
       </th>
       {rows.map((r) => (
@@ -87,10 +87,10 @@ export function TimelineGrid({ rows }: Props) {
   );
 
   return (
-    <section className={card}>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 px-4 pt-4 pb-2">
-        <h2 className={sectionTitle}>{t('gridTitle')}</h2>
-        <span className="text-xs text-ink-muted">{t('amountsIn', { currency: plan.settings.currency })}</span>
+    <Card className="overflow-hidden">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 p-4 pb-3">
+        <CardTitle as="h2">{t('gridTitle')}</CardTitle>
+        <CardDescription>{t('amountsIn', { currency: plan.settings.currency })}</CardDescription>
       </div>
       <div className="overflow-x-auto border-t border-line">
         <table className="min-w-full text-sm">
@@ -99,12 +99,12 @@ export function TimelineGrid({ rows }: Props) {
               <th scope="col" className={`${stickyBase} bg-accent-soft py-2 text-xs font-semibold`}>{t('item')}</th>
               {rows.map((r) => (
                 <th key={r.month} scope="col" className="min-w-28 px-4 py-2 text-end font-medium whitespace-nowrap">
-                  <span className="me-1">{formatMonth(r.month, locale)}</span>
+                  <span className="me-1.5">{formatMonth(r.month, locale)}</span>
                   <button
                     type="button"
                     aria-label={t('addOneOff', { month: formatMonth(r.month, locale) })}
                     onClick={() => setAddingMonth(r.month)}
-                    className="rounded border border-accent/40 px-1 leading-none text-accent transition-colors hover:bg-accent hover:text-on-accent"
+                    className={`inline-flex h-6 w-6 items-center justify-center rounded-md border border-accent/40 text-accent transition-colors hover:bg-accent hover:text-on-accent ${focusRing}`}
                   >
                     +
                   </button>
@@ -117,7 +117,7 @@ export function TimelineGrid({ rows }: Props) {
               <tr>
                 <td colSpan={rows.length + 1} className="px-3 py-8 text-center text-sm text-ink-muted">
                   <p>{t('noItems')}</p>
-                  <button type="button" className={`${btnPrimary} mt-3`} onClick={openSetup}>{t('openSetup')}</button>
+                  <Button variant="primary" className="mt-3" onClick={openSetup}>{t('openSetup')}</Button>
                 </td>
               </tr>
             )}
@@ -139,6 +139,6 @@ export function TimelineGrid({ rows }: Props) {
         </table>
       </div>
       {addingMonth && <OneOffDialog month={addingMonth} onClose={() => setAddingMonth(null)} />}
-    </section>
+    </Card>
   );
 }

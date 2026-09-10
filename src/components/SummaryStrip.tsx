@@ -2,6 +2,7 @@ import type { Summary } from '../domain/engine';
 import { useLocale, useT } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
+import { Card } from './ui';
 
 interface Props {
   summary: Summary;
@@ -19,16 +20,11 @@ export function SummaryStrip({ summary, monthCount }: Props) {
   const currency = usePlanStore((s) => s.plan.settings.currency);
   const ok = summary.allPositive;
 
-  const tone = ok
-    ? 'border-gain/30 bg-gain-soft'
-    : 'border-loss/30 bg-loss-soft';
-  const figure = ok ? 'text-gain' : 'text-loss';
-
   return (
-    <div role="status" className={`flex flex-wrap items-center gap-x-8 gap-y-3 rounded-xl border px-4 py-3 ${tone}`}>
+    <Card tone={ok ? 'gain' : 'loss'} role="status" className="flex flex-wrap items-center gap-x-8 gap-y-3 px-4 py-3">
       <div className="min-w-48">
         <div className="text-xs font-medium text-ink-muted">{t('summaryLowest')}</div>
-        <div className={`text-2xl font-semibold tabular-nums leading-tight ${figure}`}>
+        <div className={`text-2xl font-semibold tabular-nums leading-tight ${ok ? 'text-gain' : 'text-loss'}`}>
           {formatMoney(summary.lowest.balance, currency, locale)}
           <span className="ms-2 text-sm font-normal text-ink-muted">{t('summaryIn', { month: formatMonth(summary.lowest.month, locale) })}</span>
         </div>
@@ -50,6 +46,6 @@ export function SummaryStrip({ summary, monthCount }: Props) {
           </div>
         </dl>
       )}
-    </div>
+    </Card>
   );
 }

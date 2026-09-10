@@ -21,7 +21,7 @@ export function SummaryStrip({ summary, monthCount }: Props) {
   const ok = summary.allPositive;
 
   return (
-    <Card tone={ok ? 'gain' : 'loss'} role="status" className="flex flex-wrap items-center gap-x-8 gap-y-3 px-4 py-3">
+    <Card role="status" className="flex flex-wrap items-center gap-x-8 gap-y-3 px-4 py-3">
       <div className="min-w-48">
         <div className="text-xs font-medium text-ink-muted">{t('summaryLowest')}</div>
         <div className={`text-2xl font-semibold tabular-nums leading-tight ${ok ? 'text-gain' : 'text-loss'}`}>

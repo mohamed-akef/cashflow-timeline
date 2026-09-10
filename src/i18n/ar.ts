@@ -34,6 +34,7 @@ export const ar: Record<MessageKey, string> = {
   net: 'الصافي',
   closing: 'الرصيد الختامي',
   item: 'البند',
+  amountsIn: 'المبالغ بعملة {currency}',
   income: 'الدخل',
   expenses: 'المصروفات',
   noItems: 'لا توجد بنود بعد. افتح الإعداد لإضافة دخلك ومصروفاتك.',

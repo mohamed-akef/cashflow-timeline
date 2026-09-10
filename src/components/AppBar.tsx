@@ -20,7 +20,7 @@ export function AppBar() {
   const [theme, setTheme] = useThemePreference();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-surface/80 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-line bg-surface/95 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4">
         <h1 className="me-auto flex items-center gap-2.5 text-base font-semibold tracking-tight text-ink">
           {/* Wordmark: three rising bars in the accent, the shape of a balance climbing. */}

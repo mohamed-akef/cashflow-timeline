@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cashflow Timeline</title>
+    <script>
+      // Mirrors src/theme.ts: apply the stored theme before the bundle loads so
+      // the first paint is already the right colour.
+      try {
+        var theme = localStorage.getItem('cashflow-timeline:theme');
+        if (theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="/cashflow-timeline/assets/index-CYAeDlj9.js"></script>
+    <link rel="stylesheet" crossorigin href="/cashflow-timeline/assets/index-Bsn854X0.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

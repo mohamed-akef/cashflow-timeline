@@ -4,7 +4,7 @@ import { useLocale, useT, type MessageKey } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
 import { ItemForm } from './ItemForm';
-import { btnPrimary, btnSecondary, fieldLabel, input } from './ui';
+import { btnDanger, btnPrimary, btnSecondary, fieldLabel, input, sectionTitle } from './ui';
 
 type Editing = { direction: Direction; item?: PlanItem } | null;
 
@@ -46,7 +46,7 @@ export function SetupDialog() {
     return (
       <section className="space-y-2">
         <div className="flex items-center justify-between">
-          <h3 className="font-medium">{t(title)}</h3>
+          <h3 className={sectionTitle}>{t(title)}</h3>
           <button type="button" className={button} onClick={() => setEditing({ direction })}>{t(addKey)}</button>
         </div>
         <ul className="divide-y divide-line rounded border border-line">
@@ -60,7 +60,7 @@ export function SetupDialog() {
                 </span>
               </span>
               <button type="button" className={button} onClick={() => setEditing({ direction, item })}>{t('edit')}</button>
-              <button type="button" className={`${button} text-red-700 dark:text-red-400`} onClick={() => deleteItem(item.id)}>{t('delete')}</button>
+              <button type="button" className={btnDanger} onClick={() => deleteItem(item.id)}>{t('delete')}</button>
             </li>
           ))}
         </ul>
@@ -80,11 +80,11 @@ export function SetupDialog() {
 
   return (
     <div className="fixed inset-0 z-10 flex items-start justify-center overflow-y-auto bg-black/40 p-4 dark:bg-black/60 motion-safe:animate-fade">
-      <div role="dialog" aria-modal="true" aria-labelledby="setup-title" className="w-full max-w-2xl space-y-4 rounded-lg bg-surface p-4 shadow-xl motion-safe:animate-pop">
+      <div role="dialog" aria-modal="true" aria-labelledby="setup-title" className="w-full max-w-2xl space-y-4 rounded-xl border border-line bg-surface p-4 shadow-xl motion-safe:animate-pop">
         <h2 id="setup-title" className="text-lg font-semibold">{t('setupTitle')}</h2>
 
         <section className="space-y-2">
-          <h3 className="font-medium">{t('basics')}</h3>
+          <h3 className={sectionTitle}>{t('basics')}</h3>
           <div className="flex flex-wrap items-start gap-3 text-sm">
             <label className="block w-36">
               <span className={fieldLabel}>{t('startingBalance')}</span>

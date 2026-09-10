@@ -151,7 +151,7 @@ export function ItemForm({ direction, currency, initial, defaultMonth, onSave, o
         </div>
       </details>
 
-      {error && <p role="alert" className="text-sm text-red-700 dark:text-red-400 motion-safe:animate-enter">{t(error)}</p>}
+      {error && <p role="alert" className="text-sm text-loss motion-safe:animate-enter">{t(error)}</p>}
 
       <div className="flex justify-end gap-2">
         <button type="button" onClick={onCancel} className={btnGhost}>{t('cancel')}</button>

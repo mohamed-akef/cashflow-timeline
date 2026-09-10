@@ -3,7 +3,7 @@ import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON } from '../domain/plan';
 import { exportFilename, exportPlan } from '../domain/serialize';
 import { useT } from '../i18n';
 import { usePlanStore } from '../store/planStore';
-import { btnSecondary, input } from './ui';
+import { btnDanger, btnPrimary, btnSecondary, fieldLabel, input } from './ui';
 
 const PRESETS: readonly number[] = HORIZON_PRESETS;
 
@@ -16,6 +16,7 @@ const readText = (file: File) =>
     reader.readAsText(file);
   });
 
+/** Plan-level controls only: what the plan covers on the start side, what you can do with it on the end side. */
 export function Toolbar() {
   const t = useT();
   const plan = usePlanStore((s) => s.plan);
@@ -72,16 +73,13 @@ export function Toolbar() {
     if (window.confirm(t('clearConfirm'))) clearAll();
   };
 
-  const control = input;
-  const button = btnSecondary;
-
   return (
     <div className="border-b border-line bg-surface">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 p-3">
-        <label className="flex flex-col gap-0.5 text-sm">
-          <span className="flex items-center gap-1">
-            <span>{t('horizon')}</span>
-            <select className={control} aria-label={t('horizon')} value={custom ? 'custom' : String(horizonMonths)} onChange={onHorizonSelect}>
+      <div className="mx-auto flex max-w-7xl flex-wrap items-start gap-x-4 gap-y-2 px-4 py-2.5">
+        <div>
+          <label className={fieldLabel}>{t('horizon')}</label>
+          <div className="flex items-center gap-1">
+            <select className={input} aria-label={t('horizon')} value={custom ? 'custom' : String(horizonMonths)} onChange={onHorizonSelect}>
               {PRESETS.map((n) => <option key={n} value={n}>{t('horizonMonths', { n })}</option>)}
               <option value="custom">{t('horizonCustom')}</option>
             </select>
@@ -89,36 +87,37 @@ export function Toolbar() {
               <input
                 ref={customInputRef}
                 type="number" min={1} max={MAX_HORIZON} aria-label={t('horizon')}
-                className={`${control} w-20`} defaultValue={horizonMonths} onChange={onCustomHorizon}
+                className={`${input} w-20`} defaultValue={horizonMonths} onChange={onCustomHorizon}
               />
             )}
-          </span>
-          <span className="text-xs text-ink-faint">{t('horizonHint')}</span>
-        </label>
+          </div>
+          <p className="mt-1 text-xs text-ink-faint">{t('horizonHint')}</p>
+        </div>
 
-        <label className="flex items-center gap-1 text-sm">
-          <span>{t('currency')}</span>
-          <select className={control} value={currency} onChange={(e) => updateSettings({ currency: e.target.value })}>
+        <label className="block">
+          <span className={fieldLabel}>{t('currency')}</span>
+          <select className={input} value={currency} onChange={(e) => updateSettings({ currency: e.target.value })}>
             {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </label>
 
-        <button type="button" className={button} onClick={openSetup}>{t('openSetup')}</button>
-        <button type="button" className={button} onClick={onExport}>{t('exportJson')}</button>
-        <label className={`${button} cursor-pointer`}>
-          {t('importJson')}
-          <input type="file" accept=".json,application/json" className="sr-only" aria-label={t('importJson')} onChange={onImportFile} onClick={clearImportError} />
-        </label>
-        <button type="button" className={`${button} text-red-700 dark:text-red-400`} onClick={onClear}>{t('clearAll')}</button>
+        <div className="ms-auto flex flex-wrap items-center gap-2 self-center">
+          <button type="button" className={btnPrimary} onClick={openSetup}>{t('openSetup')}</button>
+          <button type="button" className={btnSecondary} onClick={onExport}>{t('exportJson')}</button>
+          <label className={`${btnSecondary} cursor-pointer`}>
+            {t('importJson')}
+            <input type="file" accept=".json,application/json" className="sr-only" aria-label={t('importJson')} onChange={onImportFile} onClick={clearImportError} />
+          </label>
+          <button type="button" className={btnDanger} onClick={onClear}>{t('clearAll')}</button>
+        </div>
       </div>
 
       {importError && (
-        <p role="alert" className="mx-auto max-w-7xl px-3 pb-2 text-sm text-red-700 dark:text-red-400">{t(`importError_${importError}`)}</p>
+        <p role="alert" className="mx-auto max-w-7xl px-4 pb-2 text-sm text-loss">{t(`importError_${importError}`)}</p>
       )}
       {storageError && (
-        <p role="status" className="mx-auto max-w-7xl px-3 pb-2 text-sm text-amber-700 dark:text-amber-400">{t('storageError')}</p>
+        <p role="status" className="mx-auto max-w-7xl px-4 pb-2 text-sm text-warn">{t('storageError')}</p>
       )}
-      <p className="mx-auto max-w-7xl px-3 pb-2 text-xs text-ink-faint">{t('privacyNote')}</p>
     </div>
   );
 }

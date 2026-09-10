@@ -40,7 +40,12 @@ export const en = {
   expenses: 'Expenses',
   noItems: 'No items yet. Open Setup to add your income and expenses.',
   addOneOff: 'Add a one-off in {month}',
-  moveTo: 'Move to',
+  editCell: 'Edit {label} in {month}',
+  cellTitle: '{label} in {month}',
+  cellHint: 'Changes here apply to this month only.',
+  includeMonth: 'Include this month',
+  useUsualAmount: 'Use the usual amount',
+  removedThisMonth: 'Removed this month',
 
   // Setup dialog
   setupTitle: 'Plan setup',

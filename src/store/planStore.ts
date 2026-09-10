@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { addMonths, diffMonths, isMonthKey, type MonthKey } from '../domain/month';
+import { isMonthKey, type MonthKey } from '../domain/month';
 import { emptyPlan, newId, planSchema, type Direction, type Plan, type PlanItem, type PlanSettings } from '../domain/plan';
 import { exportPlan, importPlan, type ImportErrorCode } from '../domain/serialize';
 
@@ -38,7 +38,11 @@ export interface PlanState {
   savePlan(plan: Plan): void;
   updateSettings(patch: Partial<PlanSettings>): void;
   addOneOff(input: { label: string; amount: number; direction: Direction; month: MonthKey }): void;
-  moveItem(id: string, toMonth: MonthKey): void;
+  /**
+   * Set how `id` behaves in `month`: an amount, `null` to remove it from that
+   * month, or `undefined` to follow the rule again.
+   */
+  setOverride(id: string, month: MonthKey, value: number | null | undefined): void;
   importFromText(text: string): boolean;
   clearAll(): void;
   openSetup(): void;
@@ -46,18 +50,13 @@ export interface PlanState {
   clearImportError(): void;
 }
 
-function movedItem(item: PlanItem, toMonth: MonthKey): PlanItem {
-  if (item.recurrence.kind === 'once') {
-    return { ...item, recurrence: { kind: 'once', month: toMonth }, window: { from: toMonth } };
-  }
-  const delta = diffMonths(item.window.from, toMonth);
-  return {
-    ...item,
-    window: {
-      from: toMonth,
-      to: item.window.to === undefined ? undefined : addMonths(item.window.to, delta),
-    },
-  };
+function withOverride(item: PlanItem, month: MonthKey, value: number | null | undefined): PlanItem {
+  const overrides = { ...item.overrides };
+  if (value === undefined) delete overrides[month];
+  else overrides[month] = value;
+  const next: PlanItem = { ...item, overrides };
+  if (Object.keys(overrides).length === 0) delete next.overrides;
+  return next;
 }
 
 export function createPlanStore(storage: Storage | undefined) {
@@ -96,11 +95,12 @@ export function createPlanStore(storage: Storage | undefined) {
         commit({ ...plan, items: [...plan.items, item] });
       },
 
-      moveItem: (id, toMonth) => {
-        if (!isMonthKey(toMonth)) return;
+      setOverride: (id, month, value) => {
+        if (!isMonthKey(month)) return;
+        if (typeof value === 'number' && !(Number.isFinite(value) && value > 0)) return;
         const { plan } = get();
         if (!plan.items.some((i) => i.id === id)) return;
-        commit({ ...plan, items: plan.items.map((i) => (i.id === id ? movedItem(i, toMonth) : i)) });
+        commit({ ...plan, items: plan.items.map((i) => (i.id === id ? withOverride(i, month, value) : i)) });
       },
 
       importFromText: (text) => {

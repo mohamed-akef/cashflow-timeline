@@ -16,7 +16,7 @@ Privacy is a hard constraint: **no backend, no server-side storage, nothing leav
 |---|---|
 | Granularity | Monthly buckets. Each column is one month; balance is a per-month figure. No day-of-month. |
 | Debt model | Running balance carried forward: `closing = opening + totalIn − totalOut`, next month's `opening = closing`. Negative closing is shown as debt. No interest, no borrowing rules, no loan amortization. |
-| In-timeline adjustments | (a) move an item to a different month, (b) add a one-off in place. Rules themselves (create / edit / delete recurring items) are owned by the re-openable setup dialog. **No per-month amount overrides.** |
+| In-timeline adjustments | (a) per-month overrides: every item cell opens a small dialog to change that month's amount or remove the item from that month (a month the rule skips can be added the same way); (b) add a one-off in place. Rules themselves (create / edit / delete recurring items) are owned by the re-openable setup dialog. _Revised 2026-09-10 at the user's request: overrides replaced the earlier "move an item to another month" control._ |
 | Persistence | Autosave to `localStorage` on every change; restored on load. A visible **Clear all data** action wipes it. Behaviour is stated plainly in the UI. |
 | Locale | Arabic + English with a language toggle and full RTL mirroring. Currency is a picker, default **SAR**, formatted via `Intl.NumberFormat`. |
 | Stack | Vite + React + TypeScript + Tailwind. Static build, no server. |
@@ -166,7 +166,7 @@ Sections, in order:
 
 - **Summary strip** at the top: "All N months positive ✓" or "First negative: Mar 2026 · Lowest: −4,250 SAR in May 2026 · Recovers: Aug 2026" (or "does not recover in this horizon").
 - **Balance chart**: closing balance per month as a line; area below zero shaded red. Hover shows month, opening, in, out, closing.
-- **Grid**: one row per item (income rows first, then expenses), one column per month, a cell shows the amount when the item occurs that month. Summary rows at the bottom: Total in, Total out, Net, Closing balance — closing cells coloured red when negative. Each month header has a "+" to add a one-off there. Each item row has a "move" affordance (month picker). Horizontal scroll when the horizon exceeds the viewport; item labels are sticky at the inline-start edge.
+- **Grid**: one row per item (income rows first, then expenses), one column per month, a cell shows the amount when the item occurs that month. Summary rows at the bottom: Total in, Total out, Net, Closing balance — closing cells coloured red when negative. Each month header has a "+" to add a one-off there. Each item cell is a button that opens the per-month dialog (include / amount); a cell that departs from the rule carries a dotted accent underline. Horizontal scroll when the horizon exceeds the viewport; item labels are sticky at the inline-start edge.
 
 ### 5.3 Toolbar
 
@@ -210,7 +210,7 @@ Vitest. Coverage priority, in order:
 
 ## 10. Out of scope for v1
 
-Excel / CSV export · interest on negative balance · loan amortization · per-month amount overrides · moving a single occurrence of a recurring item · multi-scenario comparison · GitHub Pages / CI deployment (the current PAT lacks the `workflow` scope) · any backend or account system.
+Excel / CSV export · interest on negative balance · loan amortization · moving an item to another month (replaced by per-month overrides on 2026-09-10) · multi-scenario comparison · GitHub Pages / CI deployment (the current PAT lacks the `workflow` scope) · any backend or account system.
 
 ## 11. Open plan-level decisions (resolve in the implementation plan, not here)
 

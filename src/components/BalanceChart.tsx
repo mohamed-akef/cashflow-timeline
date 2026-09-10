@@ -7,7 +7,7 @@ import { card, sectionTitle } from './ui';
 
 const W = 960;
 const H = 240;
-const PAD = { top: 16, bottom: 28, x: 24 };
+const PAD = { top: 16, bottom: 28, x: 40 };   // x wide enough for a long month label at either edge
 
 interface Props {
   rows: MonthRow[];

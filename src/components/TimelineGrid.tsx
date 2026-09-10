@@ -1,30 +1,25 @@
 import { useState } from 'react';
-import { occursIn, type MonthRow } from '../domain/engine';
+import { amountIn, type MonthRow } from '../domain/engine';
 import type { MonthKey } from '../domain/month';
 import type { PlanItem } from '../domain/plan';
 import { useLocale, useT } from '../i18n';
 import { formatAmount, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
+import { CellDialog } from './CellDialog';
 import { OneOffDialog } from './OneOffDialog';
-import { Button, Card, CardDescription, CardTitle, Select, focusRing } from './ui';
+import { Button, Card, CardDescription, CardTitle, focusRing } from './ui';
 
 interface Props {
   rows: MonthRow[];
 }
 
-const anchorMonth = (item: PlanItem): MonthKey =>
-  item.recurrence.kind === 'once' ? item.recurrence.month : item.window.from;
-
 export function TimelineGrid({ rows }: Props) {
   const t = useT();
   const locale = useLocale();
   const plan = usePlanStore((s) => s.plan);
-  const moveItem = usePlanStore((s) => s.moveItem);
   const openSetup = usePlanStore((s) => s.openSetup);
   const [addingMonth, setAddingMonth] = useState<MonthKey | null>(null);
-  const monthKeys = rows.map((r) => r.month);
-  /** Months in the plan, plus the item's own month if it currently sits outside the duration. */
-  const moveOptions = (anchor: MonthKey) => (monthKeys.includes(anchor) ? monthKeys : [anchor, ...monthKeys]);
+  const [editing, setEditing] = useState<{ item: PlanItem; month: MonthKey } | null>(null);
 
   /** Bare figures: the currency is stated once in the header, so cells carry only the number. */
   const money = (n: number) => formatAmount(n, locale);
@@ -35,6 +30,10 @@ export function TimelineGrid({ rows }: Props) {
   const stickyBase = 'sticky start-0 z-10 ps-4 pe-3 text-start';
   const stickyCell = `${stickyBase} bg-surface`;
   const numCell = 'px-4 py-1.5 text-end tabular-nums whitespace-nowrap transition-colors';
+  /** An item cell is a button: the whole cell is the control, and only the figure is drawn. */
+  const cellButton = `block w-full rounded-sm px-4 py-1.5 text-end tabular-nums whitespace-nowrap transition-colors hover:bg-surface-muted ${focusRing}`;
+  /** A month that departs from the item's rule carries a dotted accent underline. */
+  const overriddenMark = 'underline decoration-accent decoration-dotted underline-offset-4';
   const bandCell = `${stickyBase} py-1.5 text-xs font-semibold`;
 
   /** Rows stay neutral; only the figures carry colour, and only where the sign means something. */
@@ -48,25 +47,25 @@ export function TimelineGrid({ rows }: Props) {
 
   const itemRow = (item: PlanItem) => (
     <tr key={item.id} className="border-t border-line">
-      <th scope="row" className={`${stickyCell} py-1.5 font-normal`}>
-        <div className="flex items-center gap-2">
-          <span className="truncate">{item.label}</span>
-          <Select
-            size="xs"
-            aria-label={`${t('moveTo')}: ${item.label}`}
-            title={t('moveTo')}
-            value={anchorMonth(item)}
-            onChange={(e) => moveItem(item.id, e.target.value)}
-          >
-            {moveOptions(anchorMonth(item)).map((m) => <option key={m} value={m}>{formatMonth(m, locale)}</option>)}
-          </Select>
-        </div>
-      </th>
-      {rows.map((r) => (
-        <td key={r.month} className={`${numCell} ${occursIn(item, r.month) ? '' : 'text-ink-ghost'}`}>
-          {occursIn(item, r.month) ? money(item.amount) : '—'}
-        </td>
-      ))}
+      <th scope="row" className={`${stickyCell} py-1.5 font-normal`}>{item.label}</th>
+      {rows.map((r) => {
+        const amount = amountIn(item, r.month);
+        const overridden = item.overrides?.[r.month] !== undefined;
+        const monthName = formatMonth(r.month, locale);
+        return (
+          <td key={r.month} className="p-0">
+            <button
+              type="button"
+              aria-label={t('editCell', { label: item.label, month: monthName })}
+              title={overridden && amount === null ? t('removedThisMonth') : undefined}
+              onClick={() => setEditing({ item, month: r.month })}
+              className={`${cellButton} ${amount === null ? 'text-ink-ghost' : ''} ${overridden ? overriddenMark : ''}`}
+            >
+              {amount === null ? '—' : money(amount)}
+            </button>
+          </td>
+        );
+      })}
     </tr>
   );
 
@@ -137,6 +136,7 @@ export function TimelineGrid({ rows }: Props) {
         </table>
       </div>
       {addingMonth && <OneOffDialog month={addingMonth} onClose={() => setAddingMonth(null)} />}
+      {editing && <CellDialog item={editing.item} month={editing.month} onClose={() => setEditing(null)} />}
     </Card>
   );
 }

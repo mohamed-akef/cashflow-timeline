@@ -45,6 +45,16 @@ export function occursIn(item: PlanItem, month: MonthKey): boolean {
   }
 }
 
+/**
+ * The amount `item` contributes in `month`, or `null` when it contributes
+ * nothing: an override wins, otherwise the rule decides.
+ */
+export function amountIn(item: PlanItem, month: MonthKey): number | null {
+  const override = item.overrides?.[month];
+  if (override !== undefined) return override;
+  return occursIn(item, month) ? item.amount : null;
+}
+
 export function horizonMonths(settings: PlanSettings): MonthKey[] {
   return monthRange(settings.startMonth, settings.horizonMonths);
 }
@@ -54,14 +64,12 @@ const safeAmount = (n: number): number => (Number.isFinite(n) ? n : 0);
 export function expand(plan: Plan): MonthRow[] {
   let opening = plan.settings.startingBalance;
   return horizonMonths(plan.settings).map((month) => {
-    const occurrences: Occurrence[] = plan.items
-      .filter((item) => occursIn(item, month))
-      .map((item) => ({
-        itemId: item.id,
-        label: item.label,
-        direction: item.direction,
-        amount: safeAmount(item.amount),
-      }));
+    const occurrences: Occurrence[] = [];
+    for (const item of plan.items) {
+      const amount = amountIn(item, month);
+      if (amount === null) continue;
+      occurrences.push({ itemId: item.id, label: item.label, direction: item.direction, amount: safeAmount(amount) });
+    }
     const totalIn = occurrences.filter((o) => o.direction === 'in').reduce((s, o) => s + o.amount, 0);
     const totalOut = occurrences.filter((o) => o.direction === 'out').reduce((s, o) => s + o.amount, 0);
     const net = totalIn - totalOut;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { occursIn, expand, summarize, horizonMonths } from './engine';
+import { occursIn, amountIn, expand, summarize, horizonMonths } from './engine';
 import type { Plan, PlanItem } from './plan';
 
 function item(partial: Partial<PlanItem>): PlanItem {
@@ -11,6 +11,7 @@ function item(partial: Partial<PlanItem>): PlanItem {
     recurrence: partial.recurrence ?? { kind: 'monthly' },
     window: partial.window ?? { from: '2026-01' },
     note: partial.note,
+    overrides: partial.overrides,
   };
 }
 
@@ -24,6 +25,25 @@ function plan(items: PlanItem[], overrides: Partial<Plan['settings']> = {}): Pla
     items,
   };
 }
+
+describe('amountIn', () => {
+  const salary = item({ amount: 100, overrides: { '2026-02': 250, '2026-03': null, '2026-08': 40 }, window: { from: '2026-01', to: '2026-06' } });
+
+  it('follows the rule where nothing is overridden', () => {
+    expect(amountIn(salary, '2026-01')).toBe(100);
+    expect(amountIn(salary, '2026-07')).toBeNull();
+  });
+  it('an override replaces the amount, removes the month, or adds one the rule skips', () => {
+    expect(amountIn(salary, '2026-02')).toBe(250);
+    expect(amountIn(salary, '2026-03')).toBeNull();
+    expect(amountIn(salary, '2026-08')).toBe(40);
+  });
+  it('expand carries overrides into the totals', () => {
+    const rows = expand(plan([salary], { horizonMonths: 8 }));
+    expect(rows.map((r) => r.totalOut)).toEqual([100, 250, 0, 100, 100, 100, 0, 40]);
+    expect(rows[2].occurrences).toEqual([]);
+  });
+});
 
 describe('occursIn', () => {
   it('monthly: every month inside the window, inclusive both ends', () => {

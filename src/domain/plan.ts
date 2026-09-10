@@ -33,6 +33,12 @@ export const planItemSchema = z.object({
     .refine((w) => w.to === undefined || toIndex(w.to) >= toIndex(w.from), {
       message: '"to" must not be before "from"',
     }),
+  /**
+   * Per-month exceptions to the rule: a number replaces the amount in that
+   * month (and adds the item to a month the rule skips), `null` removes it
+   * from that month. Months not listed follow the rule.
+   */
+  overrides: z.record(monthKeySchema, z.number().finite().positive().nullable()).optional(),
 });
 
 export const planSettingsSchema = z.object({

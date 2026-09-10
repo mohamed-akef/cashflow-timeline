@@ -10,6 +10,18 @@ const validItem = {
   window: { from: '2026-01' },
 };
 
+describe('planItemSchema overrides', () => {
+  it('accepts an override map of amounts and nulls', () => {
+    expect(planItemSchema.safeParse({ ...validItem, overrides: { '2026-02': 1, '2026-03': null } }).success).toBe(true);
+    expect(planItemSchema.safeParse(validItem).success).toBe(true);
+  });
+  it('rejects a bad month key or a non-positive amount', () => {
+    expect(planItemSchema.safeParse({ ...validItem, overrides: { March: 1 } }).success).toBe(false);
+    expect(planItemSchema.safeParse({ ...validItem, overrides: { '2026-02': 0 } }).success).toBe(false);
+    expect(planItemSchema.safeParse({ ...validItem, overrides: { '2026-02': -3 } }).success).toBe(false);
+  });
+});
+
 describe('planSchema', () => {
   it('accepts an empty default plan', () => {
     expect(planSchema.safeParse(emptyPlan(new Date(2026, 0, 1))).success).toBe(true);

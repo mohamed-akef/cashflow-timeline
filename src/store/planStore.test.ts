@@ -91,24 +91,25 @@ describe('createPlanStore', () => {
     expect(added.id).toBeTruthy();
   });
 
-  it('moveItem on a once item changes its month', () => {
-    const store = createPlanStore(storage);
-    store.getState().savePlan({ ...plan, items: [{ ...salary, id: 'b', recurrence: { kind: 'once', month: '2026-03' }, window: { from: '2026-03' } }] });
-    store.getState().moveItem('b', '2026-05');
-    expect(store.getState().plan.items[0]).toMatchObject({ recurrence: { kind: 'once', month: '2026-05' }, window: { from: '2026-05' } });
-  });
-
-  it('moveItem on a recurring item shifts the whole window', () => {
-    const store = createPlanStore(storage);
-    store.getState().savePlan({ ...plan, items: [{ ...salary, window: { from: '2026-01', to: '2026-06' } }] });
-    store.getState().moveItem('s', '2026-03');
-    expect(store.getState().plan.items[0].window).toEqual({ from: '2026-03', to: '2026-08' });
-  });
-
-  it('moveItem ignores unknown ids', () => {
+  it('setOverride records an amount, a removal, and a reset', () => {
     const store = createPlanStore(storage);
     store.getState().savePlan(plan);
-    store.getState().moveItem('nope', '2026-03');
+    store.getState().setOverride('s', '2026-03', 12000);
+    store.getState().setOverride('s', '2026-04', null);
+    expect(store.getState().plan.items[0].overrides).toEqual({ '2026-03': 12000, '2026-04': null });
+    store.getState().setOverride('s', '2026-03', undefined);
+    expect(store.getState().plan.items[0].overrides).toEqual({ '2026-04': null });
+    store.getState().setOverride('s', '2026-04', undefined);
+    expect(store.getState().plan).toEqual(plan);
+  });
+
+  it('setOverride ignores unknown ids and bad amounts', () => {
+    const store = createPlanStore(storage);
+    store.getState().savePlan(plan);
+    store.getState().setOverride('nope', '2026-03', 1);
+    store.getState().setOverride('s', '2026-03', 0);
+    store.getState().setOverride('s', '2026-03', -5);
+    store.getState().setOverride('s', '2026-03', Number.NaN);
     expect(store.getState().plan).toEqual(plan);
   });
 
@@ -120,10 +121,10 @@ describe('createPlanStore', () => {
     expect(store.getState().plan).toEqual(plan);
   });
 
-  it('moveItem and addOneOff ignore non-MonthKey input', () => {
+  it('setOverride and addOneOff ignore non-MonthKey input', () => {
     const store = createPlanStore(storage);
     store.getState().savePlan(plan);
-    store.getState().moveItem('s', 'March');
+    store.getState().setOverride('s', 'March' as never, null);
     store.getState().addOneOff({ label: 'X', amount: 1, direction: 'out', month: '2026-1' });
     expect(store.getState().plan).toEqual(plan);
   });

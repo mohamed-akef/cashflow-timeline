@@ -39,7 +39,12 @@ export const ar: Record<MessageKey, string> = {
   expenses: 'المصروفات',
   noItems: 'لا توجد بنود بعد. افتح الإعداد لإضافة دخلك ومصروفاتك.',
   addOneOff: 'إضافة بند لمرة واحدة في {month}',
-  moveTo: 'نقل إلى',
+  editCell: 'تعديل {label} في {month}',
+  cellTitle: '{label} في {month}',
+  cellHint: 'التغييرات هنا تسري على هذا الشهر فقط.',
+  includeMonth: 'تضمين هذا الشهر',
+  useUsualAmount: 'استخدام المبلغ المعتاد',
+  removedThisMonth: 'محذوف هذا الشهر',
 
   setupTitle: 'إعداد الخطة',
   basics: 'الأساسيات',

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TimelineGrid } from './TimelineGrid';
 import { usePlanStore } from '../store/planStore';
@@ -47,12 +47,41 @@ describe('TimelineGrid', () => {
     expect(added).toMatchObject({ label: 'Tyres', amount: 800, direction: 'out', recurrence: { kind: 'once', month: '2026-03' } });
   });
 
-  it('moves an item with the month drop-down', () => {
+  it('removes an item from one month through its cell', async () => {
+    const user = userEvent.setup();
     renderGrid();
-    const input = screen.getByLabelText('Move to: Car') as HTMLSelectElement;
-    expect(input.value).toBe('2026-02');
-    fireEvent.change(input, { target: { value: '2026-03' } });
-    expect(usePlanStore.getState().plan.items.find((i) => i.id === 'c')!.recurrence).toEqual({ kind: 'once', month: '2026-03' });
+    await user.click(screen.getByRole('button', { name: 'Edit Salary in Feb 2026' }));
+    expect(screen.getByRole('dialog', { name: 'Salary in February 2026' })).toBeInTheDocument();
+    await user.click(screen.getByText('Include this month'));
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    expect(usePlanStore.getState().plan.items.find((i) => i.id === 's')!.overrides).toEqual({ '2026-02': null });
+    expect(screen.getByRole('button', { name: 'Edit Salary in Feb 2026' })).toHaveTextContent('—');
+  });
+
+  it('changes the amount for one month and keeps the rule elsewhere', async () => {
+    const user = userEvent.setup();
+    renderGrid();
+    await user.click(screen.getByRole('button', { name: 'Edit Salary in Mar 2026' }));
+    const amount = screen.getByLabelText('Amount');
+    await user.clear(amount);
+    await user.type(amount, '1500');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    const salary = usePlanStore.getState().plan.items.find((i) => i.id === 's')!;
+    expect(salary.overrides).toEqual({ '2026-03': 1500 });
+    expect(salary.amount).toBe(1000);
+  });
+
+  it('adds an item to a month its rule skips, then resets it', async () => {
+    const user = userEvent.setup();
+    renderGrid();
+    await user.click(screen.getByRole('button', { name: 'Edit Car in Jan 2026' }));
+    await user.click(screen.getByText('Include this month'));
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    expect(usePlanStore.getState().plan.items.find((i) => i.id === 'c')!.overrides).toEqual({ '2026-01': 500 });
+
+    await user.click(screen.getByRole('button', { name: 'Edit Car in Jan 2026' }));
+    await user.click(screen.getByRole('button', { name: 'Use the usual amount' }));
+    expect(usePlanStore.getState().plan.items.find((i) => i.id === 'c')!.overrides).toBeUndefined();
   });
 
   it('shows the empty state when there are no items', () => {

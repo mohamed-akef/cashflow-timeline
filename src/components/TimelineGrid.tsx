@@ -74,7 +74,7 @@ export function TimelineGrid({ rows }: Props) {
 
   const summaryRow = (label: string, pick: (r: MonthRow) => number, tone: Tone) => (
     <tr className={`border-t border-line font-semibold ${tone === 'closing' ? 'border-t-2 border-line-strong' : ''}`}>
-      <th scope="row" className={`${stickyBase} py-2 ${toneHead(tone)}`}>{label}</th>
+      <th scope="row" className={`${stickyBase} py-2 whitespace-nowrap ${toneHead(tone)}`}>{label}</th>
       {rows.map((r) => {
         const v = pick(r);
         return (

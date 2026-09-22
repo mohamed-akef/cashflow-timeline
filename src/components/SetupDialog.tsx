@@ -6,7 +6,7 @@ import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
 import { AmountInput } from './AmountInput';
 import { ItemForm } from './ItemForm';
-import { Badge, Button, CardContent, CardDescription, CardHeader, CardTitle, Dialog, Field, Input, Select, focusRing } from './ui';
+import { Badge, Button, CardContent, CardDescription, CardHeader, CardTitle, Dialog, Field, Icon, Input, Select, focusRing } from './ui';
 
 type Editing = { direction: Direction; item?: PlanItem } | null;
 
@@ -107,7 +107,7 @@ export function SetupDialog() {
                   variant="ghost" size="sm" aria-label={t('deleteItem', { label: item.label })}
                   onClick={() => deleteItem(item.id)}
                 >
-                  ✕
+                  <Icon name="close" />
                 </Button>
               </li>
             ))}

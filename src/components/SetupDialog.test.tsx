@@ -73,7 +73,7 @@ describe('SetupDialog', () => {
     usePlanStore.setState({ plan: seeded });
     render(<SetupDialog />);
     // Rent is 3,000 every month across a 12-month horizon.
-    expect(screen.getByText('SAR 36,000.00')).toBeInTheDocument();
+    expect(screen.getByText('SAR 36,000')).toBeInTheDocument();
     expect(screen.getByText('over 12 months')).toBeInTheDocument();
   });
 

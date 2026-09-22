@@ -3,7 +3,7 @@ import type { Summary } from '../domain/engine';
 import { useLocale, useT } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
-import { Card } from './ui';
+import { Card, Icon } from './ui';
 
 interface Props {
   summary: Summary;
@@ -38,7 +38,7 @@ export function SummaryStrip({ summary, monthCount }: Props) {
   const signedTone = (n: number) => (n < 0 ? 'text-loss' : 'text-gain');
 
   return (
-    <Card role="status" className="flex flex-wrap items-center gap-x-8 gap-y-3 px-4 py-3">
+    <Card role="status" className="flex flex-wrap items-center gap-x-8 gap-y-3 px-4 py-3 tabular-nums">
       <div className="min-w-48">
         <div className="text-xs font-medium text-ink-muted">{t('summaryLowest')}</div>
         <div className={`text-2xl font-semibold leading-tight ${ok ? 'text-gain' : 'text-loss'}`}>
@@ -47,7 +47,12 @@ export function SummaryStrip({ summary, monthCount }: Props) {
         </div>
       </div>
 
-      {ok && <p className="text-sm font-medium text-ink">{t('summaryAllPositive', { n: monthCount })}</p>}
+      {ok && (
+        <p className="flex items-center gap-1.5 text-sm font-medium text-gain">
+          <Icon name="check" />
+          {t('summaryAllPositive', { n: monthCount })}
+        </p>
+      )}
 
       <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
         {!ok && (

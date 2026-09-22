@@ -4,4 +4,5 @@ export { Button, buttonClass, focusRing, type ButtonVariant, type ControlSize } 
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './Card';
 export { Chip } from './Chip';
 export { Dialog } from './Dialog';
+export { Icon, type IconName } from './Icon';
 export { Field, Hint, Input, Label, Select, labelClass } from './Field';

@@ -13,6 +13,8 @@ export function formatMoney(amount: number, currency: string, locale: Locale, si
     style: 'currency',
     currency,
     signDisplay: signed ? 'exceptZero' : 'auto',
+    // Whole amounts drop the ".00", matching the grid's bare figures.
+    ...(Number.isInteger(amount) ? { minimumFractionDigits: 0, maximumFractionDigits: 0 } : {}),
   }).format(amount);
 }
 

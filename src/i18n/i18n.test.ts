@@ -16,7 +16,7 @@ describe('dictionaries', () => {
 
 describe('t', () => {
   it('interpolates {vars}', () => {
-    expect(t('en', 'summaryAllPositive', { n: 6 })).toBe('Positive in all 6 months ✓');
+    expect(t('en', 'summaryAllPositive', { n: 6 })).toBe('Positive in all 6 months');
     expect(t('ar', 'summaryAllPositive', { n: 6 })).toContain('6');
   });
 });
@@ -34,7 +34,10 @@ describe('applyLocaleToDocument', () => {
 describe('format', () => {
   it('formatMoney uses the currency and locale', () => {
     expect(formatMoney(1234.5, 'USD', 'en')).toBe('$1,234.50');
-    expect(formatMoney(-50, 'USD', 'en')).toBe('-$50.00');
+    expect(formatMoney(-50, 'USD', 'en')).toBe('-$50');
+    // Whole amounts drop the decimals; real fractions keep the currency's own precision.
+    expect(formatMoney(3883.33, 'SAR', 'en')).toMatch(/^SAR\s3,883\.33$/);
+    expect(formatMoney(1.5, 'KWD', 'en')).toMatch(/^KWD\s1\.500$/);
     // Arabic: Latin digits forced, so the digits are still 0-9
     expect(formatMoney(1234, 'SAR', 'ar')).toMatch(/1,?234/);
   });

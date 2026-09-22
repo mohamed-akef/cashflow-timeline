@@ -10,6 +10,8 @@ export const ar: Record<MessageKey, string> = {
   horizonMonths: '{n} أشهر',
   horizonCustom: 'مخصص',
   currency: 'العملة',
+  noCurrency: 'لا توجد عملة مطابقة.',
+  currentCurrency: 'الحالية',
   saveCopy: 'حفظ نسخة',
   openCopy: 'فتح نسخة',
   openSetup: 'الإعداد',

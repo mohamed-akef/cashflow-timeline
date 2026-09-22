@@ -9,6 +9,8 @@ export const en = {
   horizonMonths: '{n} months',
   horizonCustom: 'Custom',
   currency: 'Currency',
+  noCurrency: 'No currency matches that.',
+  currentCurrency: 'Current',
   saveCopy: 'Save a copy',
   openCopy: 'Open a copy',
   openSetup: 'Setup',

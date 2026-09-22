@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react';
 import { expand, summarize } from '../domain/engine';
-import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON, type Direction, type Plan, type PlanItem } from '../domain/plan';
+import { HORIZON_PRESETS, MAX_HORIZON, type Direction, type Plan, type PlanItem } from '../domain/plan';
 import { useLocale, useT, type MessageKey } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
+import { CurrencyPicker } from './CurrencyPicker';
 import { AmountInput } from './AmountInput';
 import { ItemForm } from './ItemForm';
-import { Badge, Button, CardContent, CardDescription, CardHeader, CardTitle, Dialog, Field, Icon, Input, Select, focusRing } from './ui';
+import { Badge, Button, CardContent, CardDescription, CardHeader, CardTitle, Dialog, Field, Icon, Input, focusRing } from './ui';
 
 type Editing = { direction: Direction; item?: PlanItem } | null;
 
@@ -159,9 +160,7 @@ export function SetupDialog() {
             </Field>
             <datalist id="horizon-presets">{HORIZON_PRESETS.map((n) => <option key={n} value={n} />)}</datalist>
             <Field label={t('currency')} className="w-24">
-              <Select size="default" value={settings.currency} onChange={(e) => setSettings({ currency: e.target.value })}>
-                {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </Select>
+              {(id) => <CurrencyPicker id={id} size="default" value={settings.currency} onChange={(c) => setSettings({ currency: c })} className="w-full" />}
             </Field>
           </div>
         </section>

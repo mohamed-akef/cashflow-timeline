@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
-import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON } from '../domain/plan';
+import { HORIZON_PRESETS, MAX_HORIZON } from '../domain/plan';
+import { CurrencyPicker } from './CurrencyPicker';
 import { exportFilename, exportPlan } from '../domain/serialize';
 import { useT } from '../i18n';
 import { usePlanStore } from '../store/planStore';
@@ -90,9 +91,7 @@ export function Toolbar() {
             defaultValue={horizonMonths} onChange={onCustomHorizon}
           />
         )}
-        <Select aria-label={t('currency')} value={currency} onChange={(e) => updateSettings({ currency: e.target.value })}>
-          {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
-        </Select>
+        <CurrencyPicker label={t('currency')} value={currency} onChange={(c) => updateSettings({ currency: c })} className="w-20" />
       </div>
 
       <div className="ms-auto flex items-center gap-2">

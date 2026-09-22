@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { expand, summarize } from '../domain/engine';
 import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON, type Direction, type Plan, type PlanItem } from '../domain/plan';
 import { useLocale, useT, type MessageKey } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
 import { AmountInput } from './AmountInput';
 import { ItemForm } from './ItemForm';
-import { Badge, Button, CardContent, CardDescription, CardHeader, CardTitle, Dialog, Field, Input, Select } from './ui';
+import { Badge, Button, CardContent, CardDescription, CardHeader, CardTitle, Dialog, Field, Input, Select, focusRing } from './ui';
 
 type Editing = { direction: Direction; item?: PlanItem } | null;
 
@@ -56,29 +57,58 @@ export function SetupDialog() {
   const { settings } = draft;
   const sectionTitle = 'text-sm font-semibold text-ink';
 
+  /** The figures the summary strip will show once this draft is saved. */
+  const totals = useMemo(() => summarize(expand(draft)), [draft]);
+
+  /**
+   * When the rule repeats, the month is where it starts; when it happens once,
+   * the month is the whole story. Rendering both the same way made a monthly
+   * salary read as if it only landed in September.
+   */
+  const when = (item: PlanItem) => {
+    if (item.recurrence.kind === 'once') return formatMonth(item.recurrence.month, locale);
+    const from = t('fromMonth', { month: formatMonth(item.window.from, locale) });
+    return item.window.to ? `${from} ${t('untilMonth', { month: formatMonth(item.window.to, locale) })}` : from;
+  };
+
   const list = (direction: Direction, title: MessageKey, addKey: MessageKey) => {
     const items = draft.items.filter((i) => i.direction === direction);
+    const total = direction === 'in' ? totals.totalIn : totals.totalOut;
     return (
       <section className="space-y-2">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <h3 className={sectionTitle}>{t(title)}</h3>
-          <Button size="sm" onClick={() => setEditing({ direction })}>{t(addKey)}</Button>
+          {items.length > 0 && (
+            <p className={`text-sm tabular-nums ${direction === 'in' ? 'text-gain' : 'text-loss'}`}>
+              {formatMoney(total, settings.currency, locale)}
+              <span className="ms-1.5 text-xs text-ink-faint">{t('overMonths', { n: settings.horizonMonths })}</span>
+            </p>
+          )}
+          <Button size="sm" className="ms-auto" onClick={() => setEditing({ direction })}>{t(addKey)}</Button>
         </div>
         {items.length > 0 && (
           <ul className="divide-y divide-line rounded-md border border-line">
             {items.map((item) => (
-              <li key={item.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 text-sm">
-                <span className="me-auto flex flex-wrap items-center gap-x-2 gap-y-1">
+              <li key={item.id} className="flex items-center gap-1 pe-2">
+                {/* The row is the edit control: the common action gets the whole
+                    target, and removing gets a quiet one beside it. */}
+                <button
+                  type="button"
+                  aria-label={t('editItem', { label: item.label })}
+                  onClick={() => setEditing({ direction, item })}
+                  className={`flex flex-1 flex-wrap items-center gap-x-2 gap-y-1 rounded-s-md px-3 py-2 text-start text-sm transition-colors hover:bg-surface-muted ${focusRing}`}
+                >
                   <span className="font-medium">{item.label}</span>
                   <span className="tabular-nums text-ink-muted">{formatMoney(item.amount, settings.currency, locale)}</span>
                   <Badge>{t(RECURRENCE_KEY[item.recurrence.kind])}</Badge>
-                  <span className="text-xs text-ink-faint">
-                    {formatMonth(item.window.from, locale)}
-                    {item.window.to ? ` → ${formatMonth(item.window.to, locale)}` : ''}
-                  </span>
-                </span>
-                <Button size="sm" onClick={() => setEditing({ direction, item })}>{t('edit')}</Button>
-                <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>{t('delete')}</Button>
+                  <span className="text-xs text-ink-faint">{when(item)}</span>
+                </button>
+                <Button
+                  variant="ghost" size="sm" aria-label={t('deleteItem', { label: item.label })}
+                  onClick={() => deleteItem(item.id)}
+                >
+                  ✕
+                </Button>
               </li>
             ))}
           </ul>
@@ -98,13 +128,16 @@ export function SetupDialog() {
   };
 
   return (
-    <Dialog labelledBy="setup-title" align="top" size="lg">
+    <Dialog
+      labelledBy="setup-title" align="top" size="lg"
+      onDismiss={editing ? () => setEditing(null) : closeSetup}
+    >
       <CardHeader>
         <CardTitle as="h2" id="setup-title">{t('setupTitle')}</CardTitle>
         <CardDescription>{t('privacyNote')}</CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-5">
+      <CardContent className="min-h-0 flex-1 space-y-5 overflow-y-auto">
         <section className="space-y-2">
           <h3 className={sectionTitle}>{t('basics')}</h3>
           <div className="flex flex-wrap items-start gap-3">

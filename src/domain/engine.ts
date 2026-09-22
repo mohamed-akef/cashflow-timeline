@@ -23,6 +23,15 @@ export interface Summary {
   firstNegative?: MonthKey;
   lowest: { month: MonthKey; balance: number };
   recovery?: MonthKey;
+  /** Where the plan lands: the closing balance of its last month. */
+  ending: number;
+  /** Totals over the whole horizon, not per month. */
+  totalIn: number;
+  totalOut: number;
+  /** What the plan adds to (or takes from) the starting balance overall. */
+  netChange: number;
+  /** netChange spread over the horizon: the build-up or burn rate. */
+  averageNet: number;
 }
 
 /** Does `item` produce an occurrence in `month`? Pure; ignores the horizon. */
@@ -85,12 +94,27 @@ export function summarize(rows: MonthRow[]): Summary {
   let lowest = { month: rows[0].month, balance: rows[0].closing };
   let firstNegative: MonthKey | undefined;
   let recovery: MonthKey | undefined;
+  let totalIn = 0;
+  let totalOut = 0;
 
   for (const row of rows) {
+    totalIn += row.totalIn;
+    totalOut += row.totalOut;
     if (row.closing < lowest.balance) lowest = { month: row.month, balance: row.closing };
     if (firstNegative === undefined && row.closing < 0) firstNegative = row.month;
     else if (firstNegative !== undefined && recovery === undefined && row.closing >= 0) recovery = row.month;
   }
 
-  return { allPositive: firstNegative === undefined, firstNegative, lowest, recovery };
+  const netChange = totalIn - totalOut;
+  return {
+    allPositive: firstNegative === undefined,
+    firstNegative,
+    lowest,
+    recovery,
+    ending: rows[rows.length - 1].closing,
+    totalIn,
+    totalOut,
+    netChange,
+    averageNet: netChange / rows.length,
+  };
 }

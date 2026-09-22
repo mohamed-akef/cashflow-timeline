@@ -25,6 +25,10 @@ export const en = {
   summaryFirstNegative: 'First negative month',
   summaryRecovers: 'Back above zero',
   summaryNeverRecovers: 'Does not recover within the plan duration',
+  summaryEnding: 'Ending balance',
+  summaryAverage: 'Average per month',
+  summaryMoneyIn: 'Money in',
+  summaryMoneyOut: 'Money out',
 
   // Chart + grid
   chartClosing: 'Closing balance by month',

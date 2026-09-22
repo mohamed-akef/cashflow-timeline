@@ -45,8 +45,8 @@ describe('Charts', () => {
     const tip = screen.getByTestId('chart-tip');
     expect(tip).toHaveTextContent('February 2026');
     expect(tip).toHaveTextContent('Total in');
-    expect(tip).toHaveTextContent('SAR 2,000.00');
-    expect(tip).toHaveTextContent('SAR 1,234.00');
+    expect(tip).toHaveTextContent('SAR 2,000');
+    expect(tip).toHaveTextContent('SAR 1,234');
     fireEvent.mouseLeave(screen.getByRole('group', { name: 'Closing balance by month' }));
     expect(screen.queryByTestId('chart-tip')).toBeNull();
   });

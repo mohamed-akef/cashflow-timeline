@@ -14,7 +14,7 @@ const totals = { ending: 1000, totalIn: 9000, totalOut: 7000, netChange: 2000, a
 describe('SummaryStrip', () => {
   it('shows the all-positive message', () => {
     render(<SummaryStrip monthCount={6} summary={{ allPositive: true, lowest: { month: '2026-02', balance: 10 }, ...totals }} />);
-    expect(screen.getByText('Positive in all 6 months ✓')).toBeInTheDocument();
+    expect(screen.getByText('Positive in all 6 months')).toBeInTheDocument();
     expect(screen.getByText(/10/)).toBeInTheDocument();
   });
 
@@ -31,10 +31,10 @@ describe('SummaryStrip', () => {
 
   it('shows the horizon totals, with the net change signed', () => {
     render(<SummaryStrip monthCount={6} summary={{ allPositive: true, lowest: { month: '2026-02', balance: 10 }, ...totals }} />);
-    expect(screen.getByText('Ending balance').nextElementSibling).toHaveTextContent('+SAR 2,000.00');
-    expect(screen.getByText('Average per month').nextElementSibling).toHaveTextContent('+SAR 500.00');
-    expect(screen.getByText('Money in').nextElementSibling).toHaveTextContent('SAR 9,000.00');
-    expect(screen.getByText('Money out').nextElementSibling).toHaveTextContent('SAR 7,000.00');
+    expect(screen.getByText('Ending balance').nextElementSibling).toHaveTextContent('+SAR 2,000');
+    expect(screen.getByText('Average per month').nextElementSibling).toHaveTextContent('+SAR 500');
+    expect(screen.getByText('Money in').nextElementSibling).toHaveTextContent('SAR 9,000');
+    expect(screen.getByText('Money out').nextElementSibling).toHaveTextContent('SAR 7,000');
   });
 
   it('shows never-recovers when recovery is absent', () => {

@@ -1,5 +1,6 @@
 export const en = {
   appTitle: 'Cashflow Timeline',
+  skipToContent: 'Skip to the plan',
   privacyNote: 'Everything stays in this browser. Nothing is sent anywhere.',
 
   // Toolbar
@@ -21,7 +22,7 @@ export const en = {
   storageError: 'Could not save on this device. Changes will be lost when you close the tab — export your plan to keep it.',
 
   // Summary
-  summaryAllPositive: 'Positive in all {n} months ✓',
+  summaryAllPositive: 'Positive in all {n} months',
   summaryLowest: 'Lowest balance',
   summaryIn: 'in {month}',
   summaryFirstNegative: 'First negative month',

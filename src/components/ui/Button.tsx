@@ -13,7 +13,7 @@ export const focusRing =
 
 const base =
   `inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors ${focusRing} ` +
-  'disabled:pointer-events-none disabled:opacity-50';
+  'active:translate-y-px disabled:pointer-events-none disabled:opacity-50';
 
 export const controlHeight: Record<ControlSize, string> = {
   default: 'h-9 px-4 text-sm',

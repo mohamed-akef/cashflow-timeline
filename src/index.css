@@ -107,6 +107,22 @@
 }
 
 html {
+  /* The parts the browser draws still carry the palette. */
+  caret-color: var(--accent);
+  scrollbar-color: var(--line-strong) transparent;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }

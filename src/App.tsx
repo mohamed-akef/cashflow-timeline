@@ -25,8 +25,14 @@ export default function App() {
   return (
     <div className="flex min-h-screen flex-col bg-canvas text-ink">
       <ErrorBoundary>
+        <a
+          href="#plan"
+          className="sr-only rounded-md bg-accent px-3 py-2 text-sm font-medium text-on-accent focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-40"
+        >
+          {t(locale, 'skipToContent')}
+        </a>
         <AppBar />
-        <main className="mx-auto w-full max-w-7xl flex-1 space-y-4 p-4">
+        <main id="plan" tabIndex={-1} className="mx-auto w-full max-w-7xl flex-1 space-y-4 p-4 focus:outline-none">
           <PlanAlerts />
           <SummaryStrip summary={summary} monthCount={rows.length} />
           <Charts rows={rows} />

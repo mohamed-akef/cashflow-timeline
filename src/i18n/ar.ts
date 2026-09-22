@@ -2,6 +2,7 @@ import type { MessageKey } from './en';
 
 export const ar: Record<MessageKey, string> = {
   appTitle: 'الجدول الزمني للتدفق النقدي',
+  skipToContent: 'تخطَّ إلى الخطة',
   privacyNote: 'كل شيء يبقى في هذا المتصفح. لا يُرسل أي شيء إلى أي مكان.',
 
   horizon: 'المدة',
@@ -21,7 +22,7 @@ export const ar: Record<MessageKey, string> = {
   importError_invalidPlan: 'هذا الملف لا يحتوي على خطة صالحة.',
   storageError: 'تعذّر الحفظ على هذا الجهاز. ستُفقد التغييرات عند إغلاق التبويب — صدّر خطتك للاحتفاظ بها.',
 
-  summaryAllPositive: 'موجب في كل الأشهر الـ{n} ✓',
+  summaryAllPositive: 'موجب في كل الأشهر الـ{n}',
   summaryLowest: 'أدنى رصيد',
   summaryIn: 'في {month}',
   summaryFirstNegative: 'أول شهر سالب',

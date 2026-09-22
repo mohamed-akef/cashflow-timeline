@@ -7,7 +7,7 @@ import { formatAmount, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
 import { CellDialog } from './CellDialog';
 import { OneOffDialog } from './OneOffDialog';
-import { Button, Card, CardDescription, CardTitle, focusRing } from './ui';
+import { Button, Card, CardDescription, CardTitle, Icon, focusRing } from './ui';
 
 interface Props {
   rows: MonthRow[];
@@ -113,7 +113,7 @@ export function TimelineGrid({ rows }: Props) {
                     onClick={() => setAddingMonth(r.month)}
                     className={`inline-flex h-6 w-6 items-center justify-center rounded-md border border-line-strong text-ink-muted transition-colors hover:border-accent hover:text-accent ${focusRing}`}
                   >
-                    +
+                    <Icon name="plus" className="h-3.5 w-3.5" />
                   </button>
                 </th>
               ))}

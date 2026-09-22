@@ -11,18 +11,16 @@ beforeEach(() => {
 });
 
 describe('AppBar', () => {
-  it('switches language with the EN | AR toggle and remembers it', async () => {
+  it('switches language with one tap, naming the other language, and remembers it', async () => {
     const user = userEvent.setup();
     render(<AppBar />);
-    const ar = screen.getByRole('button', { name: 'AR' });
-    expect(screen.getByRole('button', { name: 'EN' })).toHaveAttribute('aria-pressed', 'true');
-    expect(ar).toHaveAttribute('aria-pressed', 'false');
-
-    await user.click(ar);
+    await user.click(screen.getByRole('button', { name: 'العربية' }));
     expect(useUiStore.getState().locale).toBe('ar');
     expect(localStorage.getItem(LOCALE_KEY)).toBe('ar');
-    expect(ar).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('group', { name: 'اللغة' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'English' }));
+    expect(useUiStore.getState().locale).toBe('en');
+    expect(screen.queryByRole('button', { name: 'العربية' })).toBeInTheDocument();
   });
 
   it('switches the theme and remembers it', async () => {

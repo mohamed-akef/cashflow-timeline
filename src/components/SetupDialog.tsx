@@ -19,11 +19,26 @@ export function SetupDialog() {
   const stored = usePlanStore((s) => s.plan);
   const savePlan = usePlanStore((s) => s.savePlan);
   const closeSetup = usePlanStore((s) => s.closeSetup);
+  const clearAll = usePlanStore((s) => s.clearAll);
 
   const [draft, setDraft] = useState<Plan>(stored);
   const [editing, setEditing] = useState<Editing>(null);
   const [balanceText, setBalanceText] = useState(String(stored.settings.startingBalance));
   const canCancel = stored.items.length > 0;
+
+  /**
+   * clearAll leaves this dialog open, so it never remounts and the draft would
+   * keep showing — and on save, write back — the plan just deleted. Re-seed the
+   * local state from the store the way a fresh mount would.
+   */
+  const onClear = () => {
+    if (!window.confirm(t('clearConfirm'))) return;
+    clearAll();
+    const fresh = usePlanStore.getState().plan;
+    setDraft(fresh);
+    setBalanceText(String(fresh.settings.startingBalance));
+    setEditing(null);
+  };
 
   const setSettings = (patch: Partial<Plan['settings']>) =>
     setDraft((d) => ({ ...d, settings: { ...d.settings, ...patch } }));
@@ -120,6 +135,16 @@ export function SetupDialog() {
 
         {list('in', 'income', 'addIncome')}
         {list('out', 'expenses', 'addExpense')}
+
+        {/* Irreversible, so it sits at the end behind a dialog rather than in
+            the bar, and states what it removes before you reach the button. */}
+        <section className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-line pt-4">
+          <div>
+            <h3 className={sectionTitle}>{t('deletePlan')}</h3>
+            <p className="text-xs text-ink-faint">{t('deletePlanHint')}</p>
+          </div>
+          <Button variant="destructive" size="sm" onClick={onClear}>{t('clearAll')}</Button>
+        </section>
       </CardContent>
 
       <div className="flex items-center justify-end gap-2 border-t border-line p-4">

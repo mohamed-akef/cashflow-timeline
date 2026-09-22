@@ -5,7 +5,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { SetupDialog } from './components/SetupDialog';
 import { SummaryStrip } from './components/SummaryStrip';
 import { TimelineGrid } from './components/TimelineGrid';
-import { Toolbar } from './components/Toolbar';
+import { PlanAlerts } from './components/Toolbar';
 import { expand, summarize } from './domain/engine';
 import { applyLocaleToDocument, t, useLocale } from './i18n';
 import { usePlanStore } from './store/planStore';
@@ -26,8 +26,8 @@ export default function App() {
     <div className="flex min-h-screen flex-col bg-canvas text-ink">
       <ErrorBoundary>
         <AppBar />
-        <Toolbar />
         <main className="mx-auto w-full max-w-7xl flex-1 space-y-4 p-4">
+          <PlanAlerts />
           <SummaryStrip summary={summary} monthCount={rows.length} />
           <Charts rows={rows} />
           <TimelineGrid rows={rows} />

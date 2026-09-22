@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SetupDialog } from './SetupDialog';
@@ -67,6 +67,32 @@ describe('SetupDialog', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(usePlanStore.getState().plan.items).toHaveLength(1);
     expect(usePlanStore.getState().setupOpen).toBe(false);
+  });
+
+  it('clears the plan after confirmation, and does not write it back on save', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    usePlanStore.setState({ plan: seeded });
+    render(<SetupDialog />);
+    expect(screen.getByText('Rent')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Clear all data' }));
+    expect(usePlanStore.getState().plan.items).toEqual([]);
+    // The dialog stays open, so it never remounts: the draft has to be re-seeded
+    // or saving would put the deleted plan straight back.
+    expect(screen.queryByText('Rent')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Save plan' }));
+    expect(usePlanStore.getState().plan.items).toEqual([]);
+  });
+
+  it('keeps the plan when the confirmation is dismissed', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    usePlanStore.setState({ plan: seeded });
+    render(<SetupDialog />);
+    await user.click(screen.getByRole('button', { name: 'Clear all data' }));
+    expect(usePlanStore.getState().plan.items).toHaveLength(1);
+    expect(screen.getByText('Rent')).toBeInTheDocument();
   });
 
   it('accepts a negative starting balance', async () => {

@@ -19,13 +19,13 @@ pnpm build      # static site in dist/
 
 The app is published on GitHub Pages at <https://mohamed-akef.github.io/cashflow-timeline/>.
 
-```bash
-pnpm deploy:pages   # builds and pushes dist/ to the gh-pages branch
-```
+Every push to `main` runs `.github/workflows/deploy.yml`: typecheck, tests and
+build, then the `dist/` artifact goes straight to Pages. Nothing to run by hand,
+and a red suite blocks the publish.
 
 ## How it works
 
-- `src/domain/` — the model. `plan.ts` (types + zod schema), `engine.ts` (`expand` computes every month from the rules; `summarize` finds first negative / lowest / recovery), `serialize.ts` (JSON export/import behind schema validation).
+- `src/domain/` — the model. `plan.ts` (types + zod schema), `engine.ts` (`expand` computes every month from the rules; `summarize` finds first negative / lowest / recovery plus the horizon totals), `serialize.ts` (JSON export/import behind schema validation).
 - `src/store/planStore.ts` — one Zustand store; mirrors the plan to `localStorage` on every change.
 - `src/components/` — Toolbar, SetupDialog (owns rule create/edit/delete), TimelineGrid (per-month "+" one-offs and "move"), BalanceChart (SVG), SummaryStrip.
 

@@ -1,6 +1,7 @@
 import { useLocale, useT } from '../i18n';
 import { LOCALES, useUiStore, type Locale } from '../store/uiStore';
 import { THEME_PREFERENCES, useThemePreference, type ThemePreference } from '../theme';
+import { Toolbar } from './Toolbar';
 import { Select, focusRing } from './ui';
 
 /** Short, locale-invariant labels: a language switch must be readable in every language. */
@@ -9,9 +10,10 @@ const LOCALE_NAME: Record<Locale, string> = { en: 'English', ar: 'العربية
 const THEME_LABEL = { system: 'themeSystem', light: 'themeLight', dark: 'themeDark' } as const;
 
 /**
- * Top bar: app title plus device-level preferences (language, theme). Plan
- * controls live in the Toolbar. It stays pinned while the grid scrolls, with
- * the canvas showing through.
+ * The one bar: app title, the plan controls, then device-level preferences
+ * (language, theme). Everything sits on a single 8-unit control height so the
+ * row reads as one line rather than a stack of bands. It stays pinned while
+ * the grid scrolls, with the canvas showing through.
  */
 export function AppBar() {
   const t = useT();
@@ -21,8 +23,8 @@ export function AppBar() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-surface/95 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4">
-        <h1 className="me-auto flex items-center gap-2.5 text-base font-semibold tracking-tight text-ink">
+      <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2">
+        <h1 className="flex items-center gap-2.5 text-base font-semibold tracking-tight text-ink">
           {/* Wordmark: three rising bars in the accent, the shape of a balance climbing. */}
           <span aria-hidden="true" className="flex items-end gap-0.5">
             <span className="h-2 w-1 rounded-sm bg-accent/50" />
@@ -31,6 +33,8 @@ export function AppBar() {
           </span>
           {t('appTitle')}
         </h1>
+
+        <Toolbar />
 
         <div role="group" aria-label={t('language')} className="flex h-8 overflow-hidden rounded-md border border-line-strong text-sm font-medium">
           {LOCALES.map((l) => (

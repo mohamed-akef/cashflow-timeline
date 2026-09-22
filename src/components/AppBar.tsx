@@ -4,8 +4,7 @@ import { THEME_PREFERENCES, useThemePreference, type ThemePreference } from '../
 import { Toolbar } from './Toolbar';
 import { Select, focusRing } from './ui';
 
-/** Short, locale-invariant labels: a language switch must be readable in every language. */
-const LOCALE_LABEL: Record<Locale, string> = { en: 'EN', ar: 'AR' };
+/** Each language named in itself: the switch must be readable by someone who does not read the current one. */
 const LOCALE_NAME: Record<Locale, string> = { en: 'English', ar: 'العربية' };
 const THEME_LABEL = { system: 'themeSystem', light: 'themeLight', dark: 'themeDark' } as const;
 
@@ -21,6 +20,7 @@ export function AppBar() {
   const locale = useLocale();
   const setLocale = useUiStore((s) => s.setLocale);
   const [theme, setTheme] = useThemePreference();
+  const other: Locale = LOCALES.find((l) => l !== locale) ?? 'en';
 
   return (
     <header className="z-20 sm:sticky sm:top-0 border-b border-line bg-surface/95 backdrop-blur">
@@ -37,21 +37,15 @@ export function AppBar() {
 
         <Toolbar />
 
-        <div role="group" aria-label={t('language')} className="flex h-8 overflow-hidden rounded-md border border-line-strong text-sm font-medium">
-          {LOCALES.map((l) => (
-            <button
-              key={l}
-              type="button"
-              lang={l}
-              title={LOCALE_NAME[l]}
-              aria-pressed={locale === l}
-              onClick={() => setLocale(l)}
-              className={`px-3 transition-colors ${focusRing} ${locale === l ? 'bg-accent text-on-accent' : 'bg-surface text-ink-muted hover:bg-accent-soft hover:text-accent'}`}
-            >
-              {LOCALE_LABEL[l]}
-            </button>
-          ))}
-        </div>
+        {/* One tap: the button names the language you would switch to. */}
+        <button
+          type="button"
+          lang={other}
+          onClick={() => setLocale(other)}
+          className={`h-8 rounded-md border border-line-strong bg-surface px-3 text-sm font-medium text-ink transition-colors hover:border-accent hover:text-accent active:translate-y-px ${focusRing}`}
+        >
+          {LOCALE_NAME[other]}
+        </button>
 
         <Select aria-label={t('theme')} value={theme} onChange={(e) => setTheme(e.target.value as ThemePreference)}>
           {THEME_PREFERENCES.map((p) => <option key={p} value={p}>{t(THEME_LABEL[p])}</option>)}

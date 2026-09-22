@@ -11,9 +11,10 @@ const control =
   `rounded-md border border-line-strong bg-surface text-ink shadow-sm transition-colors placeholder:text-ink-faint ${focusRing} ` +
   'focus-visible:border-accent disabled:cursor-not-allowed disabled:opacity-50';
 
+// 16px on phones: iOS Safari zooms the page into any smaller text control on focus.
 const sizes: Record<ControlSize, string> = {
-  default: 'h-9 px-3 text-sm',
-  sm: 'h-8 px-2 text-sm',
+  default: 'h-9 px-3 text-base sm:text-sm',
+  sm: 'h-8 px-2 text-base sm:text-sm',
   xs: 'h-6 px-1 text-xs',
 };
 

@@ -1,0 +1,19 @@
+{
+  "id": "/cashflow-timeline/",
+  "name": "Cashflow Timeline",
+  "short_name": "Cashflow",
+  "description": "Plan your money month by month. Free personal cashflow planner that runs in your browser; nothing is sent anywhere.",
+  "start_url": "/cashflow-timeline/",
+  "scope": "/cashflow-timeline/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f5f7",
+  "theme_color": "#ffffff",
+  "lang": "en",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "/cashflow-timeline/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/cashflow-timeline/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/cashflow-timeline/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

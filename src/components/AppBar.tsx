@@ -12,8 +12,9 @@ const THEME_LABEL = { system: 'themeSystem', light: 'themeLight', dark: 'themeDa
 /**
  * The one bar: app title, the plan controls, then device-level preferences
  * (language, theme). Everything sits on a single 8-unit control height so the
- * row reads as one line rather than a stack of bands. It stays pinned while
- * the grid scrolls, with the canvas showing through.
+ * row reads as one line rather than a stack of bands. From sm up it stays
+ * pinned while the grid scrolls, with the canvas showing through; on a phone
+ * it wraps to three rows, so it scrolls away instead of eating the viewport.
  */
 export function AppBar() {
   const t = useT();
@@ -22,7 +23,7 @@ export function AppBar() {
   const [theme, setTheme] = useThemePreference();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-surface/95 backdrop-blur">
+    <header className="z-20 sm:sticky sm:top-0 border-b border-line bg-surface/95 backdrop-blur">
       <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2">
         <h1 className="flex items-center gap-2.5 text-base font-semibold tracking-tight text-ink">
           {/* Wordmark: three rising bars in the accent, the shape of a balance climbing. */}

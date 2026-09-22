@@ -1,0 +1,53 @@
+# Build, check and publish to GitHub Pages.
+#
+# Deploys used to be local (scripts/deploy-pages.sh force-pushed dist/ to a
+# gh-pages branch) because the repository token lacked the `workflow` scope.
+# It has it now, so the build runs here and Pages serves the artifact
+# directly — no gh-pages branch, no force-push.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Queue deploys rather than cancelling: a half-finished publish is worse
+# than a slightly late one. In-flight PR checks are fine to drop.
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      # Switches the Pages source to "GitHub Actions" on the first run, so
+      # no repository setting has to be changed by hand.
+      - uses: actions/configure-pages@v5
+      - id: deployment
+        uses: actions/deploy-pages@v4

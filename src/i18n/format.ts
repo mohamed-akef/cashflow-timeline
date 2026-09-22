@@ -7,8 +7,13 @@ const INTL_LOCALE: Record<Locale, string> = {
   ar: 'ar-u-ca-gregory-nu-latn',
 };
 
-export function formatMoney(amount: number, currency: string, locale: Locale): string {
-  return new Intl.NumberFormat(INTL_LOCALE[locale], { style: 'currency', currency }).format(amount);
+/** `signed` marks a change rather than a level: +2,000 reads differently from 2,000. */
+export function formatMoney(amount: number, currency: string, locale: Locale, signed = false): string {
+  return new Intl.NumberFormat(INTL_LOCALE[locale], {
+    style: 'currency',
+    currency,
+    signDisplay: signed ? 'exceptZero' : 'auto',
+  }).format(amount);
 }
 
 /**

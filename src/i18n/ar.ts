@@ -25,6 +25,10 @@ export const ar: Record<MessageKey, string> = {
   summaryFirstNegative: 'أول شهر سالب',
   summaryRecovers: 'العودة فوق الصفر',
   summaryNeverRecovers: 'لا يتعافى ضمن مدة الخطة',
+  summaryEnding: 'الرصيد النهائي',
+  summaryAverage: 'المتوسط الشهري',
+  summaryMoneyIn: 'إجمالي الداخل',
+  summaryMoneyOut: 'إجمالي الخارج',
 
   chartClosing: 'الرصيد الختامي حسب الشهر',
   chartInOut: 'الدخل والمصروفات حسب الشهر',

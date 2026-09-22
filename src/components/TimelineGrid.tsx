@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { amountIn, type MonthRow } from '../domain/engine';
 import type { MonthKey } from '../domain/month';
-import type { PlanItem } from '../domain/plan';
+import type { Direction, PlanItem } from '../domain/plan';
 import { useLocale, useT } from '../i18n';
 import { formatAmount, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
@@ -31,8 +31,8 @@ export function TimelineGrid({ rows }: Props) {
   const numCell = 'px-4 py-1.5 text-end tabular-nums whitespace-nowrap transition-colors';
   /**
    * Hierarchy: the Income / Expenses headings are set like the total rows
-   * (bold, full ink); the items beneath sit indented in the muted ink so
-   * they read as members of the group above them.
+   * (bold) and take their group's colour; the items beneath sit indented
+   * so they read as members of the group above them.
    */
   const bandRow = 'border-t border-line bg-surface-muted font-semibold';
   const bandCell = `${stickyBase} py-2 whitespace-nowrap bg-surface-muted`;
@@ -42,7 +42,11 @@ export function TimelineGrid({ rows }: Props) {
   /** A month that departs from the item's rule carries a dotted accent underline. */
   const overriddenMark = 'underline decoration-accent decoration-dotted underline-offset-4';
 
-  /** Rows stay neutral; only the figures carry colour, and only where the sign means something. */
+  /** Money in is green and money out red throughout, so the two groups stay
+   *  apart at a glance; the summary rows keep the same pairing. */
+  const directionTone = (d: Direction) => (d === 'in' ? 'text-gain' : 'text-loss');
+
+  /** Summary rows: the figure carries colour only where its sign means something. */
   type Tone = 'gain' | 'loss' | 'signed' | 'closing';
   const toneClass = (tone: Tone, v: number) => {
     if (tone === 'gain') return 'text-gain';
@@ -65,7 +69,7 @@ export function TimelineGrid({ rows }: Props) {
               aria-label={t('editCell', { label: item.label, month: monthName })}
               title={overridden && amount === null ? t('removedThisMonth') : undefined}
               onClick={() => setEditing({ item, month: r.month })}
-              className={`${cellButton} ${amount === null ? 'text-ink-ghost' : 'text-ink-muted'} ${overridden ? overriddenMark : ''}`}
+              className={`${cellButton} ${amount === null ? 'text-ink-ghost' : directionTone(item.direction)} ${overridden ? overriddenMark : ''}`}
             >
               {amount === null ? '—' : money(amount)}
             </button>
@@ -125,11 +129,11 @@ export function TimelineGrid({ rows }: Props) {
               </tr>
             )}
             {incomes.length > 0 && (
-              <tr className={bandRow}><th scope="rowgroup" colSpan={rows.length + 1} className={bandCell}>{t('income')}</th></tr>
+              <tr className={bandRow}><th scope="rowgroup" colSpan={rows.length + 1} className={`${bandCell} text-gain`}>{t('income')}</th></tr>
             )}
             {incomes.map(itemRow)}
             {expenses.length > 0 && (
-              <tr className={bandRow}><th scope="rowgroup" colSpan={rows.length + 1} className={bandCell}>{t('expenses')}</th></tr>
+              <tr className={bandRow}><th scope="rowgroup" colSpan={rows.length + 1} className={`${bandCell} text-loss`}>{t('expenses')}</th></tr>
             )}
             {expenses.map(itemRow)}
           </tbody>

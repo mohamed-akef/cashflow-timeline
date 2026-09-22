@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { occursIn, amountIn, expand, summarize, horizonMonths } from './engine';
+import type { MonthRow } from './engine';
 import type { Plan, PlanItem } from './plan';
 
 function item(partial: Partial<PlanItem>): PlanItem {
@@ -154,5 +155,21 @@ describe('summarize', () => {
   it('lowest picks the first of equal minima', () => {
     const s = summarize([row('2026-01', -5), row('2026-02', -5)]);
     expect(s.lowest.month).toBe('2026-01');
+  });
+});
+
+describe('summarize horizon totals', () => {
+  it('totals income and expense across the horizon and averages the net', () => {
+    const rows: MonthRow[] = [
+      { month: '2026-01', opening: 100, occurrences: [], totalIn: 50, totalOut: 20, net: 30, closing: 130 },
+      { month: '2026-02', opening: 130, occurrences: [], totalIn: 50, totalOut: 90, net: -40, closing: 90 },
+      { month: '2026-03', opening: 90, occurrences: [], totalIn: 50, totalOut: 20, net: 30, closing: 120 },
+    ];
+    const s = summarize(rows);
+    expect(s.totalIn).toBe(150);
+    expect(s.totalOut).toBe(130);
+    expect(s.netChange).toBe(20);
+    expect(s.ending).toBe(120);
+    expect(s.averageNet).toBeCloseTo(20 / 3);
   });
 });

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- The wordmark: three rising bars, a balance climbing. Bars sit inside the
+       inner 80% so the same image works as a plain and a maskable icon. -->
+  <rect width="512" height="512" rx="112" fill="#3d5bd0"/>
+  <rect x="136" y="288" width="64" height="112" rx="16" fill="#ffffff" fill-opacity="0.55"/>
+  <rect x="224" y="208" width="64" height="192" rx="16" fill="#ffffff" fill-opacity="0.8"/>
+  <rect x="312" y="112" width="64" height="288" rx="16" fill="#ffffff"/>
+</svg>

@@ -40,7 +40,11 @@ export function applyTheme(pref: ThemePreference): void {
   } catch {
     // Private mode or quota: the theme still applies for this page load.
   }
-  document.documentElement.classList.toggle('dark', resolveTheme(pref, osPrefersDark()) === 'dark');
+  const dark = resolveTheme(pref, osPrefersDark()) === 'dark';
+  document.documentElement.classList.toggle('dark', dark);
+  // The browser chrome (address bar, installed-app title bar) follows the app
+  // bar's surface colour; a static media-query meta would ignore the manual override.
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#18181b' : '#ffffff');
 }
 
 /** Current preference plus a setter; re-applies when the OS theme changes under "system". */

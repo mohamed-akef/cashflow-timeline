@@ -46,7 +46,7 @@ describe('SetupDialog', () => {
     render(<SetupDialog />);
 
     const rentRow = screen.getByText('Rent').closest('li')!;
-    await user.click(within(rentRow).getByRole('button', { name: 'Edit' }));
+    await user.click(within(rentRow).getByRole('button', { name: 'Edit Rent' }));
     const amount = screen.getByLabelText('Amount');
     await user.clear(amount);
     await user.type(amount, '2500');
@@ -62,10 +62,39 @@ describe('SetupDialog', () => {
     usePlanStore.setState({ plan: seeded });
     render(<SetupDialog />);
     const rentRow = screen.getByText('Rent').closest('li')!;
-    await user.click(within(rentRow).getByRole('button', { name: 'Delete' }));
+    await user.click(within(rentRow).getByRole('button', { name: 'Delete Rent' }));
     expect(screen.queryByText('Rent')).toBeNull();
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(usePlanStore.getState().plan.items).toHaveLength(1);
+    expect(usePlanStore.getState().setupOpen).toBe(false);
+  });
+
+  it('heads each list with what it adds up to over the horizon', async () => {
+    usePlanStore.setState({ plan: seeded });
+    render(<SetupDialog />);
+    // Rent is 3,000 every month across a 12-month horizon.
+    expect(screen.getByText('SAR 36,000.00')).toBeInTheDocument();
+    expect(screen.getByText('over 12 months')).toBeInTheDocument();
+  });
+
+  it('says when a repeating rule starts, and when a one-off simply happens', async () => {
+    usePlanStore.setState({ plan: seeded });
+    render(<SetupDialog />);
+    expect(screen.getByText('from Jan 2026')).toBeInTheDocument();
+  });
+
+  it('Escape closes the inline form first, and only then the dialog', async () => {
+    const user = userEvent.setup();
+    usePlanStore.setState({ plan: seeded });
+    render(<SetupDialog />);
+
+    await user.click(screen.getByRole('button', { name: 'Add expense' }));
+    expect(screen.getByLabelText('Amount')).toBeInTheDocument();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByLabelText('Amount')).toBeNull();
+    expect(usePlanStore.getState().setupOpen).toBe(true);
+
+    await user.keyboard('{Escape}');
     expect(usePlanStore.getState().setupOpen).toBe(false);
   });
 

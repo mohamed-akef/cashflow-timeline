@@ -4,12 +4,24 @@
 // cache-first. The browser re-checks this file on each visit, and a new
 // CACHE name below drops the old store on activate.
 //
-// ponytail: superseded hashed assets stay cached until the name changes;
-// switch to vite-plugin-pwa (precache manifest) if that growth ever matters.
+// ponytail: superseded hashed assets stay cached until the name changes, and
+// fonts referenced from inside the CSS are only cached once used, so a first
+// open that is already offline renders with fallback fonts. Switch to
+// vite-plugin-pwa (precache manifest) if either ever matters.
 const CACHE = 'cashflow-timeline-v1';
 
+/** The shell plus the script and stylesheet it links, so the first visit already works offline. */
+async function precache() {
+  const cache = await caches.open(CACHE);
+  const shell = await fetch('./');
+  const html = await shell.clone().text();
+  const assets = [...html.matchAll(/(?:src|href)="([^"]*\/assets\/[^"]+)"/g)].map((m) => m[1]);
+  await cache.put('./', shell);
+  await cache.addAll(assets);
+}
+
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.add('./')));
+  event.waitUntil(precache());
   self.skipWaiting();
 });
 

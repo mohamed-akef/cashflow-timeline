@@ -18,7 +18,7 @@ Arabic and English, with full RTL. Light and dark themes.
 - Per-month exceptions straight from the grid: click a cell to change that month's amount, skip the item that month, or add it to a month the rule does not cover. Click "+" in a month to add a one-off there.
 - A Setup dialog for the starting balance, start month, and the income and expense rules, with each list showing what it adds up to over the plan.
 - Duration of 3, 6 or 12 months, or a custom length up to 60. Amounts group their thousands as you type.
-- Works on a phone, and installs to the home screen from the browser menu (Add to Home Screen on iOS, Install app on Android). Once opened, it keeps working offline.
+- Works on a phone, and installs to the home screen from the browser menu (Add to Home Screen on iOS, Install app on Android). After the first visit it keeps working offline.
 
 ## Run
 

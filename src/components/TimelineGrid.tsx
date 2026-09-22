@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type RefObject } from 'react';
 import { amountIn, type MonthRow } from '../domain/engine';
 import type { MonthKey } from '../domain/month';
 import type { Direction, PlanItem } from '../domain/plan';
@@ -11,9 +11,13 @@ import { Button, Card, CardDescription, CardTitle, Icon, focusRing } from './ui'
 
 interface Props {
   rows: MonthRow[];
+  /** The table, so the chart can line its months up with these columns. */
+  tableRef?: RefObject<HTMLTableElement | null>;
+  /** The horizontal scroller, kept in step with the chart's. */
+  scrollRef?: RefObject<HTMLDivElement | null>;
 }
 
-export function TimelineGrid({ rows }: Props) {
+export function TimelineGrid({ rows, tableRef, scrollRef }: Props) {
   const t = useT();
   const locale = useLocale();
   const plan = usePlanStore((s) => s.plan);
@@ -99,8 +103,8 @@ export function TimelineGrid({ rows }: Props) {
         <CardTitle as="h2">{t('gridTitle')}</CardTitle>
         <CardDescription>{t('amountsIn', { currency: plan.settings.currency })}</CardDescription>
       </div>
-      <div className="overflow-x-auto border-t border-line">
-        <table className="min-w-full text-sm">
+      <div ref={scrollRef} className="overflow-x-auto border-t border-line">
+        <table ref={tableRef} className="min-w-full text-sm">
           <thead>
             <tr className="text-ink-muted">
               <th scope="col" className={`${stickyBase} bg-surface py-2 text-xs font-semibold`}>{t('item')}</th>

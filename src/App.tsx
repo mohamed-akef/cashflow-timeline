@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { AppBar } from './components/AppBar';
 import { Charts } from './components/Charts';
+import { useColumnLayout, useSyncedScroll } from './components/columns';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { SetupDialog } from './components/SetupDialog';
 import { SummaryStrip } from './components/SummaryStrip';
@@ -22,6 +23,13 @@ export default function App() {
   const rows = useMemo(() => expand(plan), [plan]);
   const summary = useMemo(() => summarize(rows), [rows]);
 
+  // The chart draws each month over its grid column and scrolls with the grid.
+  const table = useRef<HTMLTableElement>(null);
+  const gridScroll = useRef<HTMLDivElement>(null);
+  const chartScroll = useRef<HTMLDivElement>(null);
+  const columns = useColumnLayout(table, [rows, locale]);
+  useSyncedScroll(chartScroll, gridScroll);
+
   return (
     <div className="flex min-h-screen flex-col bg-canvas text-ink">
       <ErrorBoundary>
@@ -35,8 +43,8 @@ export default function App() {
         <main id="plan" tabIndex={-1} className="mx-auto w-full max-w-7xl flex-1 space-y-4 p-4 focus:outline-none">
           <PlanAlerts />
           <SummaryStrip summary={summary} monthCount={rows.length} />
-          <Charts rows={rows} />
-          <TimelineGrid rows={rows} />
+          <Charts rows={rows} columns={columns} scrollRef={chartScroll} />
+          <TimelineGrid rows={rows} tableRef={table} scrollRef={gridScroll} />
         </main>
         <footer className="mx-auto w-full max-w-7xl px-4 py-5 text-xs text-ink-faint">{t(locale, 'privacyNote')}</footer>
         {setupOpen && <SetupDialog />}

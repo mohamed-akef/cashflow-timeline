@@ -3,7 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cashflow Timeline</title>
+
+    <title>Cashflow Timeline: plan your money month by month, 6 or 12 months ahead</title>
+    <meta name="description" content="A free personal cashflow planner. Enter your income and expenses as rules and see your balance month by month for the next 6 or 12 months, your lowest point, and when you would go negative. Runs in your browser, nothing is sent anywhere. Arabic and English." />
+    <link rel="canonical" href="https://mohamed-akef.github.io/cashflow-timeline/" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Link cards on LinkedIn, X, Slack, WhatsApp. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cashflow Timeline" />
+    <meta property="og:title" content="Cashflow Timeline: plan your money month by month" />
+    <meta property="og:description" content="See your balance for the next 6 or 12 months before a bad month hits. Free, runs in your browser, nothing is sent anywhere." />
+    <meta property="og:url" content="https://mohamed-akef.github.io/cashflow-timeline/" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ar_AR" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Cashflow Timeline: plan your money month by month" />
+    <meta name="twitter:description" content="See your balance for the next 6 or 12 months before a bad month hits. Free, runs in your browser, nothing is sent anywhere." />
+
+    <!-- Tells search engines what kind of thing this page is. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Cashflow Timeline",
+      "url": "https://mohamed-akef.github.io/cashflow-timeline/",
+      "description": "A personal cashflow planner. Enter income and expenses as rules and see your balance month by month for the coming months, your lowest point, and when you would go negative. Runs entirely in the browser; no account and no server.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "browserRequirements": "Requires JavaScript",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "inLanguage": ["en", "ar"],
+      "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+      "codeRepository": "https://github.com/mohamed-akef/cashflow-timeline",
+      "author": { "@type": "Person", "name": "Mohamed Akef", "url": "https://github.com/mohamed-akef" }
+    }
+    </script>
+
     <script>
       // Mirrors src/theme.ts: apply the stored theme before the bundle loads so
       // the first paint is already the right colour.
@@ -17,6 +54,15 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- What a crawler or a browser without JavaScript reads instead of an empty page. -->
+    <noscript>
+      <main style="max-width: 40rem; margin: 3rem auto; padding: 0 1rem; font-family: system-ui, sans-serif; line-height: 1.5">
+        <h1>Cashflow Timeline</h1>
+        <p>A personal cashflow planner. Enter your income and expenses as rules (every month, once, every N months, or specific months of the year), set a starting balance, and see your balance month by month for the next 6 or 12 months: your lowest point, when you would go negative, and when you would recover.</p>
+        <p>Everything runs in your browser. There is no account and no server, and nothing is sent anywhere. Save your plan as a JSON file and open it again whenever you like. Available in Arabic and English.</p>
+        <p>This app needs JavaScript to run. The source is on <a href="https://github.com/mohamed-akef/cashflow-timeline">GitHub</a>.</p>
+      </main>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

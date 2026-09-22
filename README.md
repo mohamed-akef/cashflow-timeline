@@ -1,6 +1,10 @@
 # Cashflow Timeline
 
-A frontend-only personal cashflow planner. Enter your income and expenses (one-off, monthly, every N months, or specific months of the year), and see a month-by-month running balance — when you go negative, how deep, and when you recover. Adjust until every month is positive.
+**Plan your money month by month, 6 or 12 months ahead.** Live at <https://mohamed-akef.github.io/cashflow-timeline/>.
+
+A free personal cashflow planner and financial timeline. Enter your income and expenses as rules (one-off, monthly, every N months, or specific months of the year), set a starting balance, and see a month-by-month running balance for the months ahead: your lowest point, when you would go negative, how deep, and when you recover. Adjust until every month is positive.
+
+It answers a different question from a budgeting app or a bank balance. Those tell you what you have now; this shows where you will be in March.
 
 **Privacy:** there is no backend. Nothing is sent anywhere. Your plan is saved only in your browser's `localStorage`, and you can export it as JSON (and import it back) or wipe it with *Clear all data*.
 

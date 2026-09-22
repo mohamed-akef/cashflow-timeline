@@ -30,3 +30,7 @@ and a red suite blocks the publish.
 - `src/components/` — Toolbar, SetupDialog (owns rule create/edit/delete), TimelineGrid (per-month "+" one-offs and "move"), BalanceChart (SVG), SummaryStrip.
 
 Design spec: `docs/superpowers/specs/2026-09-07-cashflow-timeline-design.md`.
+
+## License
+
+[GPL-3.0-or-later](LICENSE).

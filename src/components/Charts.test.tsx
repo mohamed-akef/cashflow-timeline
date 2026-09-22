@@ -89,3 +89,35 @@ describe('niceTicks', () => {
     expect(niceTicks(0, 0)).toEqual([0, 1]);
   });
 });
+
+describe('Charts over the grid columns', () => {
+  const columns = { width: 900, gutter: 150, centers: [210, 330, 450], slot: 120 };
+  const rows = [row('2026-01', 10), row('2026-02', 20), row('2026-03', 30)];
+
+  it('draws each month at its column centre, as wide as the table', () => {
+    render(<Charts rows={rows} columns={columns} />);
+    const xs = screen.getByTestId('balance-line').getAttribute('points')!.trim().split(/\s+/).map((p) => Number(p.split(',')[0]));
+    expect(xs).toEqual([210, 330, 450]);
+    expect(screen.getByRole('group', { name: 'Closing balance by month' })).toHaveAttribute('width', '900');
+    expect(screen.getAllByTestId('month-hit').map((r) => Number(r.getAttribute('x')))).toEqual([150, 270, 390]);
+  });
+
+  it('pins the value axis in a strip as wide as the item column', () => {
+    render(<Charts rows={rows} columns={columns} />);
+    const axis = screen.getAllByTestId('y-tick')[0].closest('svg')!;
+    expect(axis).toHaveAttribute('width', '150');
+    expect(axis.getAttribute('class')).toContain('sticky');
+  });
+
+  it('labels every month when each has a column of room', () => {
+    render(<Charts rows={rows} columns={columns} />);
+    for (const m of ['Jan 2026', 'Feb 2026', 'Mar 2026']) expect(screen.getByText(m)).toBeInTheDocument();
+  });
+
+  it('ignores a stale layout whose month count differs', () => {
+    render(<Charts rows={rows} columns={{ ...columns, centers: [210, 330] }} />);
+    const xs = screen.getByTestId('balance-line').getAttribute('points')!.trim().split(/\s+/).map((p) => Number(p.split(',')[0]));
+    expect(xs).not.toEqual([210, 330, 450]);
+    expect(xs).toHaveLength(3);
+  });
+});

@@ -4,6 +4,7 @@ import type { Direction } from '../domain/plan';
 import { useLocale, useT } from '../i18n';
 import { formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
+import { AmountInput } from './AmountInput';
 import { Alert, Button, CardContent, CardFooter, CardHeader, CardTitle, Chip, Dialog, Field, Input, labelClass } from './ui';
 
 interface Props {
@@ -47,10 +48,7 @@ export function OneOffDialog({ month, onClose }: Props) {
             <Field label={t('amount')} className="w-36">
               {(id) => (
                 <div className="flex items-center gap-1">
-                  <Input
-                    id={id} className="min-w-0 flex-1 text-end tabular-nums" type="number" inputMode="decimal" min={0} step="any"
-                    value={amount} onChange={(e) => setAmount(e.target.value)}
-                  />
+                  <AmountInput id={id} className="min-w-0 flex-1" value={amount} onChange={setAmount} />
                   <span className="text-xs text-ink-faint">{currency}</span>
                 </div>
               )}

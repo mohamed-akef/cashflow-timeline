@@ -5,7 +5,8 @@ import type { PlanItem } from '../domain/plan';
 import { useLocale, useT } from '../i18n';
 import { formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
-import { Alert, Button, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Chip, Dialog, Field, Input } from './ui';
+import { AmountInput } from './AmountInput';
+import { Alert, Button, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Chip, Dialog, Field } from './ui';
 
 interface Props {
   item: PlanItem;
@@ -62,9 +63,9 @@ export function CellDialog({ item, month, onClose }: Props) {
             <Field label={t('amount')} className="w-40">
               {(id) => (
                 <div className="flex items-center gap-1">
-                  <Input
-                    id={id} className="min-w-0 flex-1 text-end tabular-nums" type="number" inputMode="decimal" min={0} step="any"
-                    value={amount} onChange={(e) => setAmount(e.target.value)} disabled={!included} autoFocus
+                  <AmountInput
+                    id={id} className="min-w-0 flex-1" value={amount} onChange={setAmount}
+                    disabled={!included} autoFocus
                   />
                   <span className="text-xs text-ink-faint">{currency}</span>
                 </div>

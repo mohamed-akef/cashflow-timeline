@@ -3,6 +3,7 @@ import { CURRENCIES, HORIZON_PRESETS, MAX_HORIZON, type Direction, type Plan, ty
 import { useLocale, useT, type MessageKey } from '../i18n';
 import { formatMoney, formatMonth } from '../i18n/format';
 import { usePlanStore } from '../store/planStore';
+import { AmountInput } from './AmountInput';
 import { ItemForm } from './ItemForm';
 import { Badge, Button, CardContent, CardDescription, CardHeader, CardTitle, Dialog, Field, Input, Select } from './ui';
 
@@ -93,11 +94,11 @@ export function SetupDialog() {
           <h3 className={sectionTitle}>{t('basics')}</h3>
           <div className="flex flex-wrap items-start gap-3">
             <Field label={t('startingBalance')} className="w-36">
-              <Input size="default" className="text-end tabular-nums" type="number" step="any" value={balanceText}
-                onChange={(e) => {
-                  setBalanceText(e.target.value);
-                  const n = Number(e.target.value);
-                  if (e.target.value !== '' && Number.isFinite(n)) setSettings({ startingBalance: n });
+              <AmountInput size="default" allowNegative value={balanceText}
+                onChange={(text) => {
+                  setBalanceText(text);
+                  const n = Number(text);
+                  if (text !== '' && Number.isFinite(n)) setSettings({ startingBalance: n });
                 }} />
             </Field>
             <Field label={t('startMonth')} className="w-40">

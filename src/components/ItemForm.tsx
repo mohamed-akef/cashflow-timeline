@@ -4,6 +4,7 @@ import { newId, type Direction, type PlanItem, type Recurrence } from '../domain
 import { useLocale, useT, type MessageKey } from '../i18n';
 import { monthName } from '../i18n/format';
 import { Alert, Button, Chip, Field, Input, Select, labelClass } from './ui';
+import { AmountInput } from './AmountInput';
 
 type Kind = Recurrence['kind'];
 const KINDS: Kind[] = ['monthly', 'once', 'everyN', 'specificMonths'];
@@ -82,10 +83,7 @@ export function ItemForm({ direction, currency, initial, defaultMonth, onSave, o
         <Field label={t('amount')} className="w-36">
           {(id) => (
             <div className="flex items-center gap-1">
-              <Input
-                id={id} className="min-w-0 flex-1 text-end tabular-nums" type="number" inputMode="decimal" min={0} step="any"
-                value={amount} onChange={(e) => setAmount(e.target.value)}
-              />
+              <AmountInput id={id} className="min-w-0 flex-1" value={amount} onChange={setAmount} />
               <span className="text-xs text-ink-faint">{currency}</span>
             </div>
           )}

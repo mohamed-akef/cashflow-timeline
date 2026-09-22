@@ -6,9 +6,18 @@ A free personal cashflow planner and financial timeline. Enter your income and e
 
 It answers a different question from a budgeting app or a bank balance. Those tell you what you have now; this shows where you will be in March.
 
-**Privacy:** there is no backend. Nothing is sent anywhere. Your plan is saved only in your browser's `localStorage`, and you can export it as JSON (and import it back) or wipe it with *Clear all data*.
+**Privacy:** there is no backend. Nothing is sent anywhere. Your plan is saved only in your browser's `localStorage`. *Save a copy* downloads it as JSON, *Open a copy* loads one back, and *Delete this plan* in Setup wipes it.
 
-Arabic and English, with full RTL.
+Arabic and English, with full RTL. Light and dark themes.
+
+## What you get
+
+- A summary strip: lowest balance and when, first negative month and when you are back above zero, ending balance with the change from your start, average per month, total money in and out.
+- A chart with three views: closing balance, income against expenses, and net change per month.
+- A month-by-month grid with opening, totals, net and closing per month, and every item in its own row.
+- Per-month exceptions straight from the grid: click a cell to change that month's amount, skip the item that month, or add it to a month the rule does not cover. Click "+" in a month to add a one-off there.
+- A Setup dialog for the starting balance, start month, and the income and expense rules, with each list showing what it adds up to over the plan.
+- Duration of 3, 6 or 12 months, or a custom length up to 60. Amounts group their thousands as you type.
 
 ## Run
 
@@ -25,13 +34,15 @@ The app is published on GitHub Pages at <https://mohamed-akef.github.io/cashflow
 
 Every push to `main` runs `.github/workflows/deploy.yml`: typecheck, tests and
 build, then the `dist/` artifact goes straight to Pages. Nothing to run by hand,
-and a red suite blocks the publish.
+and a red suite blocks the publish. Pull requests run the same checks without
+deploying.
 
 ## How it works
 
-- `src/domain/` — the model. `plan.ts` (types + zod schema), `engine.ts` (`expand` computes every month from the rules; `summarize` finds first negative / lowest / recovery plus the horizon totals), `serialize.ts` (JSON export/import behind schema validation).
+- `src/domain/` — the model. `plan.ts` (types + zod schema, including per-month `overrides` on each item), `engine.ts` (`expand` computes every month from the rules; `summarize` finds first negative / lowest / recovery plus ending balance, average and the horizon totals), `serialize.ts` (JSON export/import behind schema validation).
 - `src/store/planStore.ts` — one Zustand store; mirrors the plan to `localStorage` on every change.
-- `src/components/` — Toolbar, SetupDialog (owns rule create/edit/delete), TimelineGrid (per-month "+" one-offs and "move"), BalanceChart (SVG), SummaryStrip.
+- `src/i18n/` — English and Arabic messages (the Arabic file is type-checked against the English keys) and the money, month and amount-input formatters.
+- `src/components/` — `AppBar` (wordmark, `Toolbar` with duration, currency, Setup, Save a copy / Open a copy, language and theme), `SummaryStrip`, `Charts` (SVG, three views), `TimelineGrid` with `CellDialog` (per-month overrides) and `OneOffDialog`, `SetupDialog` with `ItemForm` (rule create/edit/delete, plan totals, Delete this plan), `AmountInput` (thousands grouping while typing).
 
 Design spec: `docs/superpowers/specs/2026-09-07-cashflow-timeline-design.md`.
 
